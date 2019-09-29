@@ -17,7 +17,7 @@ function watch(obj, prop, handler) {
 
 var Color3 = {
     new : function(r, g, b){
-        return({r, g, b})
+        return([r, g, b])
     }
 }
 
@@ -35,9 +35,11 @@ function createRectangle(Height, Width) {
 
         changeInnerColor : function(OldColor, NewColor){
             console.log("Inner Color Changed!")
-            console.log(NewColor)
-            //this.fill(NewColor[0], NewColor[1], NewColor[2])
-            tworect.fill = "rgba(" + NewColor[0] + "," +  NewColor[1] + "," +  NewColor[2] + ", 0.75)"
+            var r = NewColor[0]
+            var g = NewColor[1]
+            var b = NewColor[2]
+            tworect.fill = "rgba(" + r + "," +  g + "," +  b + ", 0.75)"
+            two.update();
         },
 
         innerColor : Color3.new(0, 255, 0),
