@@ -1,69 +1,72 @@
-var elem = document.getElementById('canvasarea');
-var params = { width: window.innerWidth , height: window.innerHeight};
+var elem = document.getElementById("canvasarea");
+var params = { width: window.innerWidth, height: window.innerHeight };
 var two = new Two(params).appendTo(elem);
 
 
-function watch(obj, prop, handler) {
-    var currval = obj[prop];
-    function callback() {
-        if (obj[prop] != currval) {
-            var temp = currval;
-            currval = obj[prop];
-            handler(temp, currval);
-        }
-    }
-    return callback;
-}
-
 var Color3 = {
-    new : function(r, g, b){
-        return([r, g, b])
-    }
-}
+  new: function(red, green, blue) {
+    return { red: red, green: green, blue: blue };
+  }
+};
 
-function createRectangle(Height, Width) {
-    var tworect = two.makeRectangle(window.innerWidth/2, window.innerHeight/2, window.innerWidth * Width, window.innerHeight * Height);
+var Vector2 = {
+  new: function(x, y) {
+    return { x: x, y: y };
+  }
+};
+
+var Rectangle = {
+  new: function(Height, Width) {
+    var tworect = two.makeRectangle(
+      window.innerWidth / 2,
+      window.innerHeight / 2,
+      window.innerWidth * Width,
+      window.innerHeight * Height
+    );
     var customrect = {
-        Position : {
-            x : tworect.translation.x,
-            y : tworect.translation.y
-        },
-        fill : function(r, g, b){
-            console.log("Filled!")
-            tworect.fill = "rgba(" + r + "," +  g + "," +  b + ", 0.75)"
-        },
-
-        changeInnerColor : function(OldColor, NewColor){
-            console.log("Inner Color Changed!")
-            var r = NewColor[0]
-            var g = NewColor[1]
-            var b = NewColor[2]
-            tworect.fill = "rgba(" + r + "," +  g + "," +  b + ", 0.75)"
-            two.update();
-        },
-
-        innerColor : Color3.new(0, 255, 0),
-        size : 0,
-        resize : function(OldVal, NewVal){
-            console.log("Resized to " + NewVal)
+      set: function(obj, prop, value) {
+        var lowerCasedProp = prop.toLowerCase();
+        if (lowerCasedProp === "position") {
+          var NewX = value.x;
+          var NewY = value.y;
+          tworect.translation.set(
+            window.innerWidth * NewX,
+            window.innerHeight * NewY
+          );
+        } else if (lowerCasedProp === "innercolor") {
+          console.log("inner color changed to ");
+          console.log(value);
+          var NewColor = value;
+          var r = NewColor.red;
+          var g = NewColor.green;
+          var b = NewColor.blue;
+          console.log(r, g, b);
+          tworect.fill = "rgba(" + r + "," + g + "," + b + ", 0.75)";
         }
-    }
-    setInterval(watch(customrect, "size", customrect.resize), 100);
-    setInterval(watch(customrect, "innerColor", customrect.changeInnerColor), 100);
-    return customrect
-}
+        obj[lowerCasedProp] = value;
+        two.update();
+        return true;
+      },
+      get: function(obj, prop) {
+        return prop in obj ? obj[prop] : null;
+      }
+    };
 
-function moveRectangle(Rectangle, NewX, NewY) {
-    Rectangle.translation.set(window.innerWidth * NewX, window.innerHeight * NewY)
-}
+    var custrect = new Proxy({}, customrect);
 
-var rect = createRectangle(0.5, 0.5)
-console.log(rect.Position.x)
-//moveRectangle(rect, 0.5, 0.6)
+    custrect.position = Vector2.new(0, 0);
+    custrect.innerColor = Color3.new(255, 255, 255);
 
-rect.innerColor = Color3.new(0,255,0)
-rect.size = 10
-//rect.opacity = 0.75;
-//rect.noStroke();
+    return custrect;
+  }
+};
+
+var rect = Rectangle.new(0.5, 0.5);
+rect.position = Vector2.new(0.5, 0.5);
+rect.innercolor = Color3.new(0, 0, 0);
+
+var rect2 = Rectangle.new(0.4, 0.5);
+
+rect.size = 10;
 
 two.update();
