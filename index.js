@@ -6,6 +6,84 @@ class Color3 {
   static fromRGB(red, green, blue) {
     return { red: red, green: green, blue: blue };
   }
+  static fromHex(HexValue) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(HexValue);
+    return result
+      ? {
+          red: parseInt(result[1], 16),
+          green: parseInt(result[2], 16),
+          blue: parseInt(result[3], 16)
+        }
+      : null;
+  }
+  static fromHSV(h, s, v){
+    var r, g, b;
+    var i;
+    var f, p, q, t;
+    h = Math.max(0, Math.min(360, h));
+    s = Math.max(0, Math.min(100, s));
+    v = Math.max(0, Math.min(100, v));
+    s /= 100;
+    v /= 100; 
+    if(s == 0) {
+        r = g = b = v;
+        return [
+            Math.round(r * 255), 
+            Math.round(g * 255), 
+            Math.round(b * 255)
+        ];
+    }
+     
+    h /= 60;
+    i = Math.floor(h);
+    f = h - i;
+    p = v * (1 - s);
+    q = v * (1 - s * f);
+    t = v * (1 - s * (1 - f));
+     
+    switch(i) {
+        case 0:
+            r = v;
+            g = t;
+            b = p;
+            break;
+     
+        case 1:
+            r = q;
+            g = v;
+            b = p;
+            break;
+     
+        case 2:
+            r = p;
+            g = v;
+            b = t;
+            break;
+     
+        case 3:
+            r = p;
+            g = q;
+            b = v;
+            break;
+     
+        case 4:
+            r = t;
+            g = p;
+            b = v;
+            break;
+     
+        default:
+            r = v;
+            g = p;
+            b = q;
+    }
+     
+    return {
+        red: Math.round(r * 255), 
+        green: Math.round(g * 255), 
+        blue: Math.round(b * 255)
+    };
+  }
 }
 
 class Vector2 {
@@ -83,14 +161,75 @@ class Rectangle {
   }
 }
 
-class Button {
+class Mouse {
+  static isInitialized = false;
+  static MouseDownFunctions = [];
+  static MouseUpFunctions = [];
+  static ClickFunctions = [];
+  static init() {
+    document.addEventListener("mousedown", function(e) {
+      Mouse.MouseDownFunctions.forEach(function(func) {
+        func(e);
+      });
+    });
+    document.addEventListener("mouseup", function(e) {
+      Mouse.MouseUpFunctions.forEach(function(func) {
+        func(e);
+      });
+    });
+    document.addEventListener("click", function(e) {
+      Mouse.ClickFunctions.forEach(function(func) {
+        func(e);
+      });
+    });
+  }
+  static get MouseDown() {
+    if (Mouse.isInitialized == false) {
+      Mouse.init();
+      Mouse.isInitialized = true;
+    }
+    return {
+      connect: function(func) {
+        Mouse.MouseDownFunctions.push(func);
+      }
+    };
+  }
+  static get MouseUp() {
+    if (Mouse.isInitialized == false) {
+      Mouse.init();
+      Mouse.isInitialized = true;
+    }
+    return {
+      connect: function(func) {
+        Mouse.MouseUpFunctions.push(func);
+      }
+    };
+  }
+  static get Click() {
+    if (Mouse.isInitialized == false) {
+      Mouse.init();
+      Mouse.isInitialized = true;
+    }
+    return {
+      connect: function(func) {
+        Mouse.ClickFunctions.push(func);
+      }
+    };
+  }
+}
+
+Mouse.MouseDown.connect(function(e) {});
+
+Mouse.MouseUp.connect(function(e) {});
+
+Mouse.Click.connect(function(e) {});
+
+
+class RaisedButton {
   constructor(Width, Height) {
     this.rectangle = new Rectangle(0.25, 0.25);
     this.backtangle = new Rectangle(0.25, 0.25);
-    this.backtangle.position = Vector2.new(
-      this.rectangle.position.x,
-      this.rectangle.position.y + 0.025
-    );
+    this.setRectangleToBacktangle(this.rectangle, this.backtangle);
     this.backtangle.opacity = 0.5;
 
     document.addEventListener("click", this.click.bind(this));
@@ -100,17 +239,26 @@ class Button {
     document.addEventListener("mouseup", this.mouseup.bind(this));
   }
 
+  setRectangleToBacktangle(Rectangle, Backtangle) {
+    Rectangle.position = Vector2.new(
+      Backtangle.position.x,
+      Backtangle.position.y - 0.02
+    );
+    Rectangle.size = Backtangle.size;
+    Rectangle.innerColor = Backtangle.innerColor;
+  }
   click(e) {
     if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
       console.log("Clicked!");
+      this.onButtonClicked();
     }
   }
   mouseup(e) {
-    if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
+    if (this.rectangle.position == this.backtangle.position) {
       console.log("mouse up in square!");
       this.rectangle.position = Vector2.new(
         this.backtangle.position.x,
-        this.backtangle.position.y - 0.025
+        this.backtangle.position.y - 0.02
       );
     }
   }
@@ -145,21 +293,51 @@ class Button {
   }
 
   set position(NewPos) {
-    var NewX = NewPos.x;
-    var NewY = NewPos.y;
-    this.rectangle.position = Vector2.new(NewPos.x, NewPos.y + 0.025)
-    this.backtangle.position = NewPos
+    this.backtangle.position = NewPos;
+    this.setRectangleToBacktangle(this.rectangle, this.backtangle);
     this.setPropertyAndUpdate("position", NewPos);
   }
-
+  get position() {
+    return this._position;
+  }
+  set size(NewSize) {
+    this.backtangle.size = NewSize;
+    this.setRectangleToBacktangle(this.rectangle, this.backtangle);
+    this.setPropertyAndUpdate("size", NewSize);
+  }
+  get size() {
+    return this._size;
+  }
+  set onButtonClicked(codeToRun) {
+    this.setPropertyAndUpdate("onButtonClicked", codeToRun);
+  }
+  get onButtonClicked() {
+    return this._onButtonClicked;
+  }
+  set innerColor(NewColor) {
+    this.backtangle.innerColor = NewColor;
+    this.setRectangleToBacktangle(this.rectangle, this.backtangle);
+    this.setPropertyAndUpdate("innerColor", NewColor);
+  }
+  get innerColor() {
+    return this._innerColor;
+  }
+  setPropertyAndUpdate(PropName, PropValue) {
+    this["_" + PropName] = PropValue;
+    two.update();
+  }
 }
+
 //var nrect = new Rectangle(0.25,0.25);
 var rectangle = new Rectangle(0.1, 0.1);
 rectangle.position = Vector2.new(0.2, 0.2);
 rectangle.innerColor = Color3.fromRGB(0, 255, 0);
-var button = new Button(0.5, 0.5);
+var button = new RaisedButton(0.5, 0.5);
 //var button2 = new Button(0.2, 0.2);
-//button2.position = Vector2.new(0.9, 0.9);
+button.position = Vector2.new(0.8, 0.8);
+button.size = Vector2.new(0.1, 0.3);
+button.innerColor = Color3.fromRGB(255, 0, 0);
 
+console.log(Color3.fromHSV(217, 73, 96))
 //console.log(nrect.innerColor);
 //console.log(nrect.position);
