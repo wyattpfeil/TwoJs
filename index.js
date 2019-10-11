@@ -16,7 +16,7 @@ class Color3 {
         }
       : null;
   }
-  static fromHSV(h, s, v){
+  static fromHSV(h, s, v) {
     var r, g, b;
     var i;
     var f, p, q, t;
@@ -24,64 +24,60 @@ class Color3 {
     s = Math.max(0, Math.min(100, s));
     v = Math.max(0, Math.min(100, v));
     s /= 100;
-    v /= 100; 
-    if(s == 0) {
-        r = g = b = v;
-        return [
-            Math.round(r * 255), 
-            Math.round(g * 255), 
-            Math.round(b * 255)
-        ];
+    v /= 100;
+    if (s == 0) {
+      r = g = b = v;
+      return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
     }
-     
+
     h /= 60;
     i = Math.floor(h);
     f = h - i;
     p = v * (1 - s);
     q = v * (1 - s * f);
     t = v * (1 - s * (1 - f));
-     
-    switch(i) {
-        case 0:
-            r = v;
-            g = t;
-            b = p;
-            break;
-     
-        case 1:
-            r = q;
-            g = v;
-            b = p;
-            break;
-     
-        case 2:
-            r = p;
-            g = v;
-            b = t;
-            break;
-     
-        case 3:
-            r = p;
-            g = q;
-            b = v;
-            break;
-     
-        case 4:
-            r = t;
-            g = p;
-            b = v;
-            break;
-     
-        default:
-            r = v;
-            g = p;
-            b = q;
+
+    switch (i) {
+      case 0:
+        r = v;
+        g = t;
+        b = p;
+        break;
+
+      case 1:
+        r = q;
+        g = v;
+        b = p;
+        break;
+
+      case 2:
+        r = p;
+        g = v;
+        b = t;
+        break;
+
+      case 3:
+        r = p;
+        g = q;
+        b = v;
+        break;
+
+      case 4:
+        r = t;
+        g = p;
+        b = v;
+        break;
+
+      default:
+        r = v;
+        g = p;
+        b = q;
     }
-     
+
     return {
-        red: Math.round(r * 255), 
-        green: Math.round(g * 255), 
-        blue: Math.round(b * 255)
+      red: Math.round(r * 255),
+      green: Math.round(g * 255),
+      blue: Math.round(b * 255)
     };
   }
 }
@@ -136,7 +132,6 @@ class Rectangle {
     var r = NewColor.red;
     var g = NewColor.green;
     var b = NewColor.blue;
-    console.log(r, g, b);
     this.tworect.fill = "rgba(" + r + "," + g + "," + b + ", 1)";
     this.setPropertyAndUpdate("innerColor", NewColor);
   }
@@ -144,8 +139,6 @@ class Rectangle {
     return this._innerColor;
   }
   set size(NewSize) {
-    console.log("New size is ");
-    console.log(NewSize);
     var SizeX = window.innerWidth * NewSize.x;
     var SizeY = window.innerHeight * NewSize.y;
     this.tworect.width = SizeX;
@@ -224,7 +217,6 @@ Mouse.MouseUp.connect(function(e) {});
 
 Mouse.Click.connect(function(e) {});
 
-
 class RaisedButton {
   constructor(Width, Height) {
     this.rectangle = new Rectangle(0.25, 0.25);
@@ -232,6 +224,7 @@ class RaisedButton {
     this.setRectangleToBacktangle(this.rectangle, this.backtangle);
     this.backtangle.opacity = 0.5;
 
+    this.onButtonClicked = function(){}
     document.addEventListener("click", this.click.bind(this));
 
     document.addEventListener("mousedown", this.mousedown.bind(this));
@@ -249,13 +242,11 @@ class RaisedButton {
   }
   click(e) {
     if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
-      console.log("Clicked!");
       this.onButtonClicked();
     }
   }
   mouseup(e) {
     if (this.rectangle.position == this.backtangle.position) {
-      console.log("mouse up in square!");
       this.rectangle.position = Vector2.new(
         this.backtangle.position.x,
         this.backtangle.position.y - 0.02
@@ -264,7 +255,6 @@ class RaisedButton {
   }
   mousedown(e) {
     if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
-      console.log("Mouse Down in Rectangle!");
       this.rectangle.position = this.backtangle.position;
     }
   }
@@ -328,16 +318,35 @@ class RaisedButton {
   }
 }
 
+
+class TextLabel {
+  constructor(Text){
+    this.TwoTextLabel = two.makeText(Text, window.innerWidth / 2, window.innerHeight / 2);
+    two.update()
+  }
+  set text(NewText){
+    this.TwoTextLabel.value = NewText
+    this.setPropertyAndUpdate("text", NewText)
+  }
+  get text(){
+    return this._text
+  }
+  setPropertyAndUpdate(PropName, PropValue) {
+    this["_" + PropName] = PropValue;
+    two.update();
+  }
+}
+
 //var nrect = new Rectangle(0.25,0.25);
 var rectangle = new Rectangle(0.1, 0.1);
-rectangle.position = Vector2.new(0.2, 0.2);
+rectangle.position = Vector2.new(0.5, 0.5);
 rectangle.innerColor = Color3.fromRGB(0, 255, 0);
 var button = new RaisedButton(0.5, 0.5);
+
 //var button2 = new Button(0.2, 0.2);
 button.position = Vector2.new(0.8, 0.8);
 button.size = Vector2.new(0.1, 0.3);
 button.innerColor = Color3.fromRGB(255, 0, 0);
 
-console.log(Color3.fromHSV(217, 73, 96))
-//console.log(nrect.innerColor);
-//console.log(nrect.position);
+var Label1 = new TextLabel("Hello World!")
+Label1.text = "Test123"
