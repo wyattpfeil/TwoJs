@@ -525,7 +525,34 @@ function logKey(e) {
       
     } else if (e.key == "Meta"){
       
-    } else if (e.key == "ArrowLeft" && e.metaKey){
+    } else if (e.key == "v" && e.metaKey){
+      var input = document.createElement("textarea");
+      input.name = "textarea";
+
+      document.body.appendChild(input)
+      input.focus()
+      function handlePaste (e) {
+        var clipboardData, pastedData;
+
+        // Stop data actually being pasted into div
+        e.stopPropagation();
+        e.preventDefault();
+
+        // Get pasted data via clipboard API
+        clipboardData = e.clipboardData || window.clipboardData;
+        pastedData = clipboardData.getData('Text');
+        CurrentTextBox.text = CurrentTextBox.text + pastedData
+        updateTextSize();
+        input.remove()
+    }
+
+    input.addEventListener('paste', handlePaste);
+      document.execCommand("paste");
+      input.select();
+
+      //CurrentTextBox.text = CurrentTextBox.text + window.clipboardData.getData('Text')
+    }
+    else if (e.key == "ArrowLeft" && e.metaKey){
       var input = document.createElement("textarea");
       input.name = "textarea";
 
