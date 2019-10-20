@@ -1,6 +1,7 @@
 var elem = document.getElementById("canvasarea");
 var params = { width: window.innerWidth, height: window.innerHeight };
 var two = new Two(params).appendTo(elem);
+var CurrentTextBox;
 
 class Color3 {
   static fromRGB(red, green, blue) {
@@ -80,6 +81,20 @@ class Color3 {
       blue: Math.round(b * 255)
     };
   }
+  static rgbToHex = function(r,g,b) {   
+    var rgbSingleToHex = function (rgb) { 
+      var hex = Number(rgb).toString(16);
+      if (hex.length < 2) {
+           hex = "0" + hex;
+      }
+      return hex;
+    };
+    var red = rgbSingleToHex(r);
+    var green = rgbSingleToHex(g);
+    var blue = rgbSingleToHex(b);
+    return red+green+blue;
+  };
+  
 }
 
 class Vector2 {
@@ -117,6 +132,13 @@ class Rectangle {
   }
   get outline() {
     return this._outline;
+  }
+  set outlineColor(NewColor){
+    this.tworect.stroke = "#" + Color3.rgbToHex(NewColor.red, NewColor.green, NewColor.blue)
+    this.setPropertyAndUpdate("outlineColor", NewColor);
+  }
+  get outlineColor(){
+    return this._outlineColor
   }
   set opacity(NewOpacity) {
     this.tworect.opacity = NewOpacity;
@@ -331,9 +353,97 @@ class TextLabel {
   get text(){
     return this._text
   }
+  set size(NewSize){
+    this.TwoTextLabel.size = NewSize * ((window.innerWidth + window.innerHeight) / 2) / 2
+    this.setPropertyAndUpdate("size", NewSize)
+  }
+  get size(){
+    return this._size
+  }
+  set position(NewPosition){
+    console.log("Position changed")
+    var NewX = NewPosition.x
+    var NewY = NewPosition.y
+    this.TwoTextLabel.translation.set(
+      window.innerWidth * NewX,
+      window.innerHeight * NewY
+    );
+    this.setPropertyAndUpdate("position", NewPosition)
+  }
+  get position(){
+    return this._position
+  }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;
     two.update();
+  }
+}
+
+class TextBox{
+  constructor(Text){
+    this.BackBox = new Rectangle(0.1, 0.1)
+    this.BackBox.innerColor = Color3.fromRGB(255, 255, 255)
+    this.TextLabel = new TextLabel(Text)
+    this.TextLabel.size = 0.1
+    this.BackBox.outline = 2
+    this.BackBox.outlineColor = Color3.fromRGB(0, 189, 255)
+    this.onButtonClicked = function(){
+      CurrentTextBox = this
+      this.BackBox.outline = 2
+    }
+    document.addEventListener("click", this.click.bind(this));
+  }
+
+  
+  set size(NewSize){
+    this.BackBox.size = NewSize
+    this.TextLabel.size = NewSize.x
+    this.setPropertyAndUpdate("size", NewSize)
+  }
+  get size(){
+    return this._size
+  }
+  set text(NewText){
+    this.TextLabel.text = NewText
+    this.setPropertyAndUpdate("text", NewText)
+  }
+  get text(){
+    return this._text
+  }
+  setPropertyAndUpdate(PropName, PropValue) {
+    this["_" + PropName] = PropValue;
+    two.update();
+  }
+  click(e) {
+    if (this.isPointInRectangle(e.clientX, e.clientY, this.BackBox)) {
+      this.onButtonClicked();
+    } else {
+      CurrentTextBox = null
+      this.BackBox.outline = 2
+    }
+  }
+  isPointInRectangle(X, Y, Rectangle) {
+    var CenterOfButtonX = Rectangle.position.x * window.innerWidth;
+    var CenterOfButtonY = Rectangle.position.y * window.innerHeight;
+    var SizeOfButtonX = Rectangle.size.x * window.innerWidth;
+    var SizeOfButtonY = Rectangle.size.y * window.innerHeight;
+
+    var LeftSideOfButton = CenterOfButtonX - SizeOfButtonX / 2;
+    var RightSideOfButton = CenterOfButtonX + SizeOfButtonX / 2;
+
+    var TopOfButton = CenterOfButtonY - SizeOfButtonY / 2;
+    var BottomOfButton = CenterOfButtonY + SizeOfButtonY / 2;
+
+    if (
+      X > LeftSideOfButton &&
+      X < RightSideOfButton &&
+      Y > TopOfButton &&
+      Y < BottomOfButton
+    ) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 
@@ -350,3 +460,57 @@ button.innerColor = Color3.fromRGB(255, 0, 0);
 
 var Label1 = new TextLabel("Hello World!")
 Label1.text = "Test123"
+Label1.size = 0.1
+Label1.position = Vector2.new(0.5,0.5)
+
+var Box1 = new TextBox("Hello")
+Box1.size = Vector2.new(0.5,0.3)
+document.addEventListener('keydown', logKey);
+Box1.text = ""
+Box1.TextLabel.size = 0.22714285714285715
+console.log(Box1.text)
+function logKey(e) {
+  if(CurrentTextBox == null){
+
+  } else {
+    console.log(e.code)
+    var KeyCode = e.code
+    console.log(CurrentTextBox)
+    if(KeyCode.includes("Key")){
+      CurrentTextBox.text = CurrentTextBox.text + KeyCode.replace("Key", "")
+      //CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*5.3
+      //size.x*360
+      //size.x * 0.05
+      if (CurrentTextBox.text.length <= CurrentTextBox.size.x * 360){
+        CurrentTextBox.TextLabel.size = 0.01419642858
+      }
+      if (CurrentTextBox.text.length <= CurrentTextBox.size.x * 180){
+        CurrentTextBox.TextLabel.size = 0.02839285715
+      }
+      if (CurrentTextBox.text.length <= CurrentTextBox.size.x * 90){
+        CurrentTextBox.TextLabel.size = 0.0567857143
+      }
+      if (CurrentTextBox.text.length <= CurrentTextBox.size.x * 45){
+        CurrentTextBox.TextLabel.size = 0.1135714286
+      }
+      if (CurrentTextBox.text.length <= CurrentTextBox.size.x * 22) {
+        //CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*5.3
+        CurrentTextBox.TextLabel.size = 0.22714285714285715
+      }  
+      // 4 letters fill up Box size of 0.1
+      // 5 letters fill up Box size of 0.2
+
+    }  else if (KeyCode == "Backspace"){
+      CurrentTextBox.text = CurrentTextBox.text.substring(0, CurrentTextBox.text.length - 1);
+      if (CurrentTextBox.text.length > 6) {
+        CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*5.3
+      } else {
+        CurrentTextBox.TextLabel.size = 0.22714285714285715
+      }
+      
+    }
+    
+  }
+}
+
+console.log(Color3.rgbToHex(0, 189, 255))
