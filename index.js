@@ -395,8 +395,13 @@ class TextBox {
     this.onButtonClicked = function() {
       CurrentTextBox = this;
       this.BackBox.outlineColor = Color3.fromRGB(0, 189, 255);
+      this.TextLabel.text = this.TextLabel.text + "|"
     };
     document.addEventListener("click", this.click.bind(this));
+    //GEFLGHSDFLJDF
+    this.TextLabel.size = 0.23
+    this.text = "Inser Text Here"
+
   }
 
   set size(NewSize) {
@@ -420,10 +425,16 @@ class TextBox {
   }
   click(e) {
     if (this.isPointInRectangle(e.clientX, e.clientY, this.BackBox)) {
-      this.onButtonClicked();
+      if(CurrentTextBox == null){
+        this.onButtonClicked();
+      }
     } else {
-      CurrentTextBox = null;
-      this.BackBox.outlineColor = Color3.fromRGB(0, 0, 0);
+      if (CurrentTextBox != null){
+        CurrentTextBox = null;
+        this.BackBox.outlineColor = Color3.fromRGB(0, 0, 0);
+        var TextWithoutCursor = this.TextLabel.text.slice(0, -1);
+        this.TextLabel.text = TextWithoutCursor
+      }
     }
   }
   isPointInRectangle(X, Y, Rectangle) {
@@ -489,34 +500,6 @@ function logKey(e) {
       } else {
         CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*4.5
       }
-      /*if (
-        CurrentTextBox.text.length <=
-        CurrentTextBox.size.x * (BaseSize * 16)
-      ) {
-        CurrentTextBox.TextLabel.size = BaseNum / 16;
-      }
-      if (
-        CurrentTextBox.text.length <=
-        CurrentTextBox.size.x * (BaseSize * 8)
-      ) {
-        CurrentTextBox.TextLabel.size = BaseNum / 8;
-      }
-      if (
-        CurrentTextBox.text.length <=
-        CurrentTextBox.size.x * (BaseSize * 4)
-      ) {
-        CurrentTextBox.TextLabel.size = BaseNum / 4;
-      }
-      if (
-        CurrentTextBox.text.length <=
-        CurrentTextBox.size.x * (BaseSize * 2)
-      ) {
-        CurrentTextBox.TextLabel.size = BaseNum / 2;
-      }
-      if (CurrentTextBox.text.length <= CurrentTextBox.size.x * BaseSize) {
-        //CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*5.3
-        CurrentTextBox.TextLabel.size = BaseNum;
-      }*/
     }
     var ShiftDown = false
     console.log(e.key)
@@ -524,17 +507,25 @@ function logKey(e) {
     }  if (KeyCode == "Backspace") {
       CurrentTextBox.text = CurrentTextBox.text.substring(
         0,
-        CurrentTextBox.text.length - 1
-      );
+        CurrentTextBox.text.length - 2
+      ) + "|";
     } else if (e.key == "Shift") {
 
     } else if (e.key == "Tab"){
-      CurrentTextBox.text = CurrentTextBox.text + "   "
+      CurrentTextBox.text = CurrentTextBox.text.substring(
+        0,
+        CurrentTextBox.text.length - 1
+      );
+      CurrentTextBox.text = CurrentTextBox.text + "   " + "|"
     } else if (e.key == "CapsLock"){
       
     } else if (e.key == "Meta"){
       
-    } else if (e.key == "v" && e.metaKey){
+    } else if (e.key == "Enter"){
+      
+    } else if (e.key == "Meta"){
+      
+    } else if (e.key == "ArrowLeft" && e.metaKey){
       var input = document.createElement("textarea");
       input.name = "textarea";
 
@@ -550,7 +541,11 @@ function logKey(e) {
         // Get pasted data via clipboard API
         clipboardData = e.clipboardData || window.clipboardData;
         pastedData = clipboardData.getData('Text');
-        CurrentTextBox.text = CurrentTextBox.text + pastedData
+        CurrentTextBox.text = CurrentTextBox.text.substring(
+          0,
+          CurrentTextBox.text.length - 1
+        );
+        CurrentTextBox.text = CurrentTextBox.text + pastedData + "|"
         updateTextSize();
         input.remove()
     }
@@ -561,8 +556,27 @@ function logKey(e) {
       
       //CurrentTextBox.text = CurrentTextBox.text + window.clipboardData.getData('Text')
     }
+    else if (e.key == "ArrowRight"){
+      
+    } 
+    else if (e.key == "ArrowUp"){
+      
+    } 
+    else if (e.key == "ArrowDown"){
+      
+    } 
+    else if (e.key == "Alt"){
+      
+    } 
+    else if (e.key == "Escape"){
+      
+    } 
     else {
-      CurrentTextBox.text = CurrentTextBox.text + e.key
+      CurrentTextBox.text = CurrentTextBox.text.substring(
+        0,
+        CurrentTextBox.text.length - 1
+      );
+      CurrentTextBox.text = CurrentTextBox.text + e.key + "|"
     }
     updateTextSize();
   }
