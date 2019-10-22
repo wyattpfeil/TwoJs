@@ -81,10 +81,10 @@ class Color3 {
       blue: Math.round(b * 255)
     };
   }
-  static fromRandom(){
-    var red = Math.floor(Math.random() * 256); 
-    var green = Math.floor(Math.random() * 256); 
-    var blue = Math.floor(Math.random() * 256); 
+  static fromRandom() {
+    var red = Math.floor(Math.random() * 256);
+    var green = Math.floor(Math.random() * 256);
+    var blue = Math.floor(Math.random() * 256);
     return { red: red, green: green, blue: blue };
   }
   static rgbToHex = function(r, g, b) {
@@ -556,6 +556,42 @@ class TextBox {
   }
 }
 
+class Image {
+  constructor(Image) {
+    var svgCanvas = document.querySelector("#canvasarea > svg");
+    this.Img = document.createElementNS("http://www.w3.org/2000/svg", "image");
+    this.Img.setAttributeNS("http://www.w3.org/1999/xlink", "href", Image);
+    this.Img.setAttributeNS(null, "width", "200");
+    this.Img.setAttributeNS(null, "height", "200");
+    this.Img.setAttribute("preserveAspectRatio", "none");
+    svgCanvas.appendChild(this.Img);
+  }
+  set size(NewSize) {
+    var SizeX = window.innerWidth * NewSize.x;
+    var SizeY = window.innerHeight * NewSize.y;
+    this.Img.setAttributeNS(null, "width", SizeX.toString());
+    this.Img.setAttributeNS(null, "height", SizeY.toString());
+    this.setPropertyAndUpdate("size", NewSize);
+  }
+  get size() {
+    return this._size;
+  }
+  set position(NewPosition) {
+    var PositionX = window.innerWidth * NewPosition.x;
+    var PositionY = window.innerHeight * NewPosition.y;
+    this.Img.setAttributeNS(null, "x", PositionX.toString());
+    this.Img.setAttributeNS(null, "y", PositionY.toString());
+    this.setPropertyAndUpdate("position", NewPosition)
+  }
+  get position() {
+    return this._position
+  }
+  setPropertyAndUpdate(PropName, PropValue) {
+    this["_" + PropName] = PropValue;
+    two.update();
+  }
+}
+
 var rectangle = new Rectangle(0.1, 0.1);
 rectangle.position = Vector2.new(0.1, 0.7);
 rectangle.innerColor = Color3.fromRGB(0, 255, 0);
@@ -564,9 +600,9 @@ var button = new RaisedButton(0.2, 0.2);
 button.position = Vector2.new(0.1, 0.4);
 button.size = Vector2.new(0.2, 0.2);
 button.innerColor = Color3.fromRGB(255, 0, 0);
-button.onButtonClicked = function(){
-  button.innerColor = Color3.fromRandom()
-}
+button.onButtonClicked = function() {
+  button.innerColor = Color3.fromRandom();
+};
 
 var Label1 = new TextLabel("Hello World!");
 Label1.text = "Test123";
@@ -580,7 +616,10 @@ Box1.text = "";
 Box1.position = Vector2.new(0.1, 0.1);
 console.log(Box1.text);
 
-var FlatButton = new Button(0.2,0.2)
+var FlatButton = new Button(0.2, 0.2);
+FlatButton.onButtonClicked = function() {
+  FlatButton.innerColor = Color3.fromRandom();
+};
 function logKey(e) {
   if (CurrentTextBox == null) {
   } else {
@@ -690,3 +729,9 @@ function logKey(e) {
 }
 
 console.log(Color3.rgbToHex(0, 189, 255));
+
+var img = new Image(
+  "https://www.petmd.com/sites/default/files/senior-golden-retriever-with-ball-picture-id488657289.jpg"
+);
+img.size = Vector2.new(0.1, 0.3);
+img.position = Vector2.new(0.2,0.2)
