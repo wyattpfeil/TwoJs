@@ -117,7 +117,7 @@ class Rectangle {
       window.innerHeight * Height
     );
     this.position = Vector2.new(0.5, 0.5);
-    this.size = Vector2.new(0.25, 0.25);
+    this.size = Vector2.new(Width, Height);
     this.innerColor = Color3.fromRGB(255, 0, 0);
     this.outline = 0;
     this.opacity = 1;
@@ -248,11 +248,12 @@ Mouse.Click.connect(function(e) {});
 
 class RaisedButton {
   constructor(Width, Height) {
-    this.rectangle = new Rectangle(0.25, 0.25);
-    this.backtangle = new Rectangle(0.25, 0.25);
+    this.rectangle = new Rectangle(Width, Height);
+    this.backtangle = new Rectangle(Width, Height);
+    this.size = Vector2.new(Width, Height)
     this.setRectangleToBacktangle(this.rectangle, this.backtangle);
+    
     this.backtangle.opacity = 0.5;
-
     this.onButtonClicked = function() {};
     document.addEventListener("click", this.click.bind(this));
 
@@ -264,7 +265,7 @@ class RaisedButton {
   setRectangleToBacktangle(Rectangle, Backtangle) {
     Rectangle.position = Vector2.new(
       Backtangle.position.x,
-      Backtangle.position.y - 0.02
+      Backtangle.position.y - this.size.y/10
     );
     Rectangle.size = Backtangle.size;
     Rectangle.innerColor = Backtangle.innerColor;
@@ -278,7 +279,7 @@ class RaisedButton {
     if (this.rectangle.position == this.backtangle.position) {
       this.rectangle.position = Vector2.new(
         this.backtangle.position.x,
-        this.backtangle.position.y - 0.02
+        this.backtangle.position.y - this.size.y/10
       );
     }
   }
@@ -320,6 +321,7 @@ class RaisedButton {
     return this._position;
   }
   set size(NewSize) {
+    this.setPropertyAndUpdate("size", NewSize);
     this.backtangle.size = NewSize;
     this.setRectangleToBacktangle(this.rectangle, this.backtangle);
     this.setPropertyAndUpdate("size", NewSize);
@@ -349,7 +351,7 @@ class RaisedButton {
 
 class Button {
   constructor(Width, Height) {
-    this.rectangle = new Rectangle(0.25, 0.25);
+    this.rectangle = new Rectangle(Width, Height);
     this.onButtonClicked = function() {};
     document.addEventListener("click", this.click.bind(this));
 
