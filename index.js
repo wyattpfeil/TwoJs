@@ -81,6 +81,12 @@ class Color3 {
       blue: Math.round(b * 255)
     };
   }
+  static fromRandom(){
+    var red = Math.floor(Math.random() * 256); 
+    var green = Math.floor(Math.random() * 256); 
+    var blue = Math.floor(Math.random() * 256); 
+    return { red: red, green: green, blue: blue };
+  }
   static rgbToHex = function(r, g, b) {
     var rgbSingleToHex = function(rgb) {
       var hex = Number(rgb).toString(16);
@@ -341,6 +347,87 @@ class RaisedButton {
   }
 }
 
+class Button {
+  constructor(Width, Height) {
+    this.rectangle = new Rectangle(0.25, 0.25);
+    this.onButtonClicked = function() {};
+    document.addEventListener("click", this.click.bind(this));
+
+    document.addEventListener("mousedown", this.mousedown.bind(this));
+
+    document.addEventListener("mouseup", this.mouseup.bind(this));
+  }
+  click(e) {
+    if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
+      //Mouse Clicked
+      this.onButtonClicked();
+    }
+  }
+  mouseup(e) {
+    //Mouse Up
+  }
+  mousedown(e) {
+    if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
+      //Mouse Down
+    }
+  }
+  isPointInRectangle(X, Y, Rectangle) {
+    var CenterOfButtonX = Rectangle.position.x * window.innerWidth;
+    var CenterOfButtonY = Rectangle.position.y * window.innerHeight;
+    var SizeOfButtonX = Rectangle.size.x * window.innerWidth;
+    var SizeOfButtonY = Rectangle.size.y * window.innerHeight;
+
+    var LeftSideOfButton = CenterOfButtonX - SizeOfButtonX / 2;
+    var RightSideOfButton = CenterOfButtonX + SizeOfButtonX / 2;
+
+    var TopOfButton = CenterOfButtonY - SizeOfButtonY / 2;
+    var BottomOfButton = CenterOfButtonY + SizeOfButtonY / 2;
+
+    if (
+      X > LeftSideOfButton &&
+      X < RightSideOfButton &&
+      Y > TopOfButton &&
+      Y < BottomOfButton
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  set position(NewPos) {
+    this.rectangle.position = NewPos;
+    this.setPropertyAndUpdate("position", NewPos);
+  }
+  get position() {
+    return this._position;
+  }
+  set size(NewSize) {
+    this.rectangle.size = NewSize;
+    this.setPropertyAndUpdate("size", NewSize);
+  }
+  get size() {
+    return this._size;
+  }
+  set onButtonClicked(codeToRun) {
+    this.setPropertyAndUpdate("onButtonClicked", codeToRun);
+  }
+  get onButtonClicked() {
+    return this._onButtonClicked;
+  }
+  set innerColor(NewColor) {
+    this.rectangle.innerColor = NewColor;
+    this.setPropertyAndUpdate("innerColor", NewColor);
+  }
+  get innerColor() {
+    return this._innerColor;
+  }
+  setPropertyAndUpdate(PropName, PropValue) {
+    this["_" + PropName] = PropValue;
+    two.update();
+  }
+}
+
 class TextLabel {
   constructor(Text) {
     this.TwoTextLabel = two.makeText(
@@ -395,13 +482,12 @@ class TextBox {
     this.onButtonClicked = function() {
       CurrentTextBox = this;
       this.BackBox.outlineColor = Color3.fromRGB(0, 189, 255);
-      this.TextLabel.text = this.TextLabel.text + "|"
+      this.TextLabel.text = this.TextLabel.text + "|";
     };
     document.addEventListener("click", this.click.bind(this));
     //GEFLGHSDFLJDF
-    this.TextLabel.size = 0.23
-    this.text = "Inser Text Here"
-
+    this.TextLabel.size = 0.23;
+    this.text = "Inser Text Here";
   }
 
   set size(NewSize) {
@@ -419,21 +505,29 @@ class TextBox {
   get text() {
     return this._text;
   }
+  set position(NewPosition) {
+    this.BackBox.position = NewPosition;
+    this.TextLabel.position = NewPosition;
+    this.setPropertyAndUpdate("position", NewPosition);
+  }
+  get position() {
+    return this._position;
+  }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;
     two.update();
   }
   click(e) {
     if (this.isPointInRectangle(e.clientX, e.clientY, this.BackBox)) {
-      if(CurrentTextBox == null){
+      if (CurrentTextBox == null) {
         this.onButtonClicked();
       }
     } else {
-      if (CurrentTextBox != null){
+      if (CurrentTextBox != null) {
         CurrentTextBox = null;
         this.BackBox.outlineColor = Color3.fromRGB(0, 0, 0);
         var TextWithoutCursor = this.TextLabel.text.slice(0, -1);
-        this.TextLabel.text = TextWithoutCursor
+        this.TextLabel.text = TextWithoutCursor;
       }
     }
   }
@@ -462,35 +556,38 @@ class TextBox {
   }
 }
 
-//var nrect = new Rectangle(0.25,0.25);
 var rectangle = new Rectangle(0.1, 0.1);
-rectangle.position = Vector2.new(0.5, 0.5);
+rectangle.position = Vector2.new(0.1, 0.7);
 rectangle.innerColor = Color3.fromRGB(0, 255, 0);
-var button = new RaisedButton(0.5, 0.5);
 
-//var button2 = new Button(0.2, 0.2);
-button.position = Vector2.new(0.8, 0.8);
-button.size = Vector2.new(0.1, 0.3);
+var button = new RaisedButton(0.2, 0.2);
+button.position = Vector2.new(0.1, 0.4);
+button.size = Vector2.new(0.2, 0.2);
 button.innerColor = Color3.fromRGB(255, 0, 0);
+button.onButtonClicked = function(){
+  button.innerColor = Color3.fromRandom()
+}
 
 var Label1 = new TextLabel("Hello World!");
 Label1.text = "Test123";
 Label1.size = 0.1;
-Label1.position = Vector2.new(0.5, 0.5);
+Label1.position = Vector2.new(0.1, 0.3);
 
 var Box1 = new TextBox("Hello");
-Box1.size = Vector2.new(0.5, 0.3);
+Box1.size = Vector2.new(0.25, 0.2);
 document.addEventListener("keydown", logKey);
 Box1.text = "";
+Box1.position = Vector2.new(0.1, 0.1);
 console.log(Box1.text);
 
+var FlatButton = new Button(0.2,0.2)
 function logKey(e) {
   if (CurrentTextBox == null) {
   } else {
     console.log(e.code);
     var KeyCode = e.code;
     console.log(CurrentTextBox);
-    var BaseNum = 0.23
+    var BaseNum = 0.23;
     var BaseSize = 22.5;
     function updateTextSize() {
       //CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*5.3
@@ -498,40 +595,35 @@ function logKey(e) {
         //CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*5.3
         CurrentTextBox.TextLabel.size = BaseNum;
       } else {
-        CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*4.5
+        CurrentTextBox.TextLabel.size =
+          (CurrentTextBox.size.x / CurrentTextBox.text.length) * 4.5;
       }
     }
-    var ShiftDown = false
-    console.log(e.key)
+    var ShiftDown = false;
+    console.log(e.key);
     if (KeyCode.includes("Key")) {
-    }  if (KeyCode == "Backspace") {
-      CurrentTextBox.text = CurrentTextBox.text.substring(
-        0,
-        CurrentTextBox.text.length - 2
-      ) + "|";
+    }
+    if (KeyCode == "Backspace") {
+      CurrentTextBox.text =
+        CurrentTextBox.text.substring(0, CurrentTextBox.text.length - 2) + "|";
     } else if (e.key == "Shift") {
-
-    } else if (e.key == "Tab"){
+    } else if (e.key == "Tab") {
       CurrentTextBox.text = CurrentTextBox.text.substring(
         0,
         CurrentTextBox.text.length - 1
       );
-      CurrentTextBox.text = CurrentTextBox.text + "   " + "|"
-    } else if (e.key == "CapsLock"){
-      
-    } else if (e.key == "Meta"){
-      
-    } else if (e.key == "Enter"){
-      
-    } else if (e.key == "Meta"){
-      
-    } else if (e.key == "v" && e.metaKey){
+      CurrentTextBox.text = CurrentTextBox.text + "   " + "|";
+    } else if (e.key == "CapsLock") {
+    } else if (e.key == "Meta") {
+    } else if (e.key == "Enter") {
+    } else if (e.key == "Meta") {
+    } else if (e.key == "v" && e.metaKey) {
       var input = document.createElement("textarea");
       input.name = "textarea";
 
-      document.body.appendChild(input)
-      input.focus()
-      function handlePaste (e) {
+      document.body.appendChild(input);
+      input.focus();
+      function handlePaste(e) {
         var clipboardData, pastedData;
 
         // Stop data actually being pasted into div
@@ -540,70 +632,58 @@ function logKey(e) {
 
         // Get pasted data via clipboard API
         clipboardData = e.clipboardData || window.clipboardData;
-        pastedData = clipboardData.getData('Text');
-        CurrentTextBox.text = CurrentTextBox.text + pastedData
+        pastedData = clipboardData.getData("Text");
+        CurrentTextBox.text = CurrentTextBox.text + pastedData;
         updateTextSize();
-        input.remove()
-    }
+        input.remove();
+      }
 
-    input.addEventListener('paste', handlePaste);
+      input.addEventListener("paste", handlePaste);
       document.execCommand("paste");
       input.select();
 
       //CurrentTextBox.text = CurrentTextBox.text + window.clipboardData.getData('Text')
-    }
-    else if (e.key == "ArrowLeft" && e.metaKey){
+    } else if (e.key == "ArrowLeft" && e.metaKey) {
       var input = document.createElement("textarea");
       input.name = "textarea";
 
-      document.body.appendChild(input)
-      input.focus()
-      function handlePaste (e) {
+      document.body.appendChild(input);
+      input.focus();
+      function handlePaste(e) {
         var clipboardData, pastedData;
-    
+
         // Stop data actually being pasted into div
         e.stopPropagation();
         e.preventDefault();
-    
+
         // Get pasted data via clipboard API
         clipboardData = e.clipboardData || window.clipboardData;
-        pastedData = clipboardData.getData('Text');
+        pastedData = clipboardData.getData("Text");
         CurrentTextBox.text = CurrentTextBox.text.substring(
           0,
           CurrentTextBox.text.length - 1
         );
-        CurrentTextBox.text = CurrentTextBox.text + pastedData + "|"
+        CurrentTextBox.text = CurrentTextBox.text + pastedData + "|";
         updateTextSize();
-        input.remove()
-    }
+        input.remove();
+      }
 
-    input.addEventListener('paste', handlePaste);
+      input.addEventListener("paste", handlePaste);
       document.execCommand("paste");
       input.select();
-      
+
       //CurrentTextBox.text = CurrentTextBox.text + window.clipboardData.getData('Text')
-    }
-    else if (e.key == "ArrowRight"){
-      
-    } 
-    else if (e.key == "ArrowUp"){
-      
-    } 
-    else if (e.key == "ArrowDown"){
-      
-    } 
-    else if (e.key == "Alt"){
-      
-    } 
-    else if (e.key == "Escape"){
-      
-    } 
-    else {
+    } else if (e.key == "ArrowRight") {
+    } else if (e.key == "ArrowUp") {
+    } else if (e.key == "ArrowDown") {
+    } else if (e.key == "Alt") {
+    } else if (e.key == "Escape") {
+    } else {
       CurrentTextBox.text = CurrentTextBox.text.substring(
         0,
         CurrentTextBox.text.length - 1
       );
-      CurrentTextBox.text = CurrentTextBox.text + e.key + "|"
+      CurrentTextBox.text = CurrentTextBox.text + e.key + "|";
     }
     updateTextSize();
   }
