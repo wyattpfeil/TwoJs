@@ -250,9 +250,9 @@ class RaisedButton {
   constructor(Width, Height) {
     this.rectangle = new Rectangle(Width, Height);
     this.backtangle = new Rectangle(Width, Height);
-    this.size = Vector2.new(Width, Height)
+    this.size = Vector2.new(Width, Height);
     this.setRectangleToBacktangle(this.rectangle, this.backtangle);
-    
+
     this.backtangle.opacity = 0.5;
     this.onButtonClicked = function() {};
     document.addEventListener("click", this.click.bind(this));
@@ -265,7 +265,7 @@ class RaisedButton {
   setRectangleToBacktangle(Rectangle, Backtangle) {
     Rectangle.position = Vector2.new(
       Backtangle.position.x,
-      Backtangle.position.y - this.size.y/10
+      Backtangle.position.y - this.size.y / 10
     );
     Rectangle.size = Backtangle.size;
     Rectangle.innerColor = Backtangle.innerColor;
@@ -279,7 +279,7 @@ class RaisedButton {
     if (this.rectangle.position == this.backtangle.position) {
       this.rectangle.position = Vector2.new(
         this.backtangle.position.x,
-        this.backtangle.position.y - this.size.y/10
+        this.backtangle.position.y - this.size.y / 10
       );
     }
   }
@@ -324,7 +324,6 @@ class RaisedButton {
     this.setPropertyAndUpdate("size", NewSize);
     this.backtangle.size = NewSize;
     this.setRectangleToBacktangle(this.rectangle, this.backtangle);
-    this.setPropertyAndUpdate("size", NewSize);
   }
   get size() {
     return this._size;
@@ -445,6 +444,13 @@ class TextLabel {
   }
   get text() {
     return this._text;
+  }
+  set textColor(NewColor) {
+    this.TwoTextLabel.fill =  "#" + Color3.rgbToHex(NewColor.red, NewColor.green, NewColor.blue);
+    this.setPropertyAndUpdate("textColor", NewColor);
+  }
+  get textColor() {
+    return this._textColor;
   }
   set size(NewSize) {
     this.TwoTextLabel.size =
@@ -583,17 +589,16 @@ class Image {
     var PositionY = window.innerHeight * NewPosition.y;
     this.Img.setAttributeNS(null, "x", PositionX.toString());
     this.Img.setAttributeNS(null, "y", PositionY.toString());
-    this.setPropertyAndUpdate("position", NewPosition)
+    this.setPropertyAndUpdate("position", NewPosition);
   }
   get position() {
-    return this._position
+    return this._position;
   }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;
     two.update();
   }
 }
-
 
 function logKey(e) {
   if (CurrentTextBox == null) {
