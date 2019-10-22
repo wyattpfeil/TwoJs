@@ -592,34 +592,7 @@ class Image {
   }
 }
 
-var rectangle = new Rectangle(0.1, 0.1);
-rectangle.position = Vector2.new(0.1, 0.7);
-rectangle.innerColor = Color3.fromRGB(0, 255, 0);
 
-var button = new RaisedButton(0.2, 0.2);
-button.position = Vector2.new(0.1, 0.4);
-button.size = Vector2.new(0.2, 0.2);
-button.innerColor = Color3.fromRGB(255, 0, 0);
-button.onButtonClicked = function() {
-  button.innerColor = Color3.fromRandom();
-};
-
-var Label1 = new TextLabel("Hello World!");
-Label1.text = "Test123";
-Label1.size = 0.1;
-Label1.position = Vector2.new(0.1, 0.3);
-
-var Box1 = new TextBox("Hello");
-Box1.size = Vector2.new(0.25, 0.2);
-document.addEventListener("keydown", logKey);
-Box1.text = "";
-Box1.position = Vector2.new(0.1, 0.1);
-console.log(Box1.text);
-
-var FlatButton = new Button(0.2, 0.2);
-FlatButton.onButtonClicked = function() {
-  FlatButton.innerColor = Color3.fromRandom();
-};
 function logKey(e) {
   if (CurrentTextBox == null) {
   } else {
@@ -727,11 +700,3 @@ function logKey(e) {
     updateTextSize();
   }
 }
-
-console.log(Color3.rgbToHex(0, 189, 255));
-
-var img = new Image(
-  "https://www.petmd.com/sites/default/files/senior-golden-retriever-with-ball-picture-id488657289.jpg"
-);
-img.size = Vector2.new(0.1, 0.3);
-img.position = Vector2.new(0.2,0.2)
