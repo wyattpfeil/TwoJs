@@ -22,3 +22,12 @@ CloseButton.onButtonClicked = function() {
         CloseButton.text = "Close Explorer";
     }
 };
+
+var MouseCoordinates = new TextLabel("Mouse Coordinates:")
+MouseCoordinates.position = Vector2.new(0.07,0.95)
+
+Mouse.MouseMove.connect(function(e){
+    var xPosInPixels = e.x
+    var yPosInPixels = e.y
+    MouseCoordinates.text = "Mouse Coordinates: x = " + (xPosInPixels / window.innerWidth).toFixed(2) + ", y = " + (yPosInPixels / window.window.innerHeight).toFixed(2)
+})

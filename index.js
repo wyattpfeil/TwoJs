@@ -122,7 +122,7 @@ class Rectangle {
     this.outline = 0;
     this.opacity = 1;
     this.outlineColor = Color3.fromRGB(0, 0, 0);
-    this.visible = true
+    this.visible = true;
   }
   set position(NewPos) {
     var NewX = NewPos.x;
@@ -200,6 +200,7 @@ class Mouse {
   static MouseDownFunctions = [];
   static MouseUpFunctions = [];
   static ClickFunctions = [];
+  static MouseMoveFunctions = [];
   static init() {
     document.addEventListener("mousedown", function(e) {
       Mouse.MouseDownFunctions.forEach(function(func) {
@@ -213,6 +214,11 @@ class Mouse {
     });
     document.addEventListener("click", function(e) {
       Mouse.ClickFunctions.forEach(function(func) {
+        func(e);
+      });
+    });
+    document.addEventListener("mousemove", function(e) {
+      Mouse.MouseMoveFunctions.forEach(function(func) {
         func(e);
       });
     });
@@ -250,6 +256,17 @@ class Mouse {
       }
     };
   }
+  static get MouseMove() {
+    if (Mouse.isInitialized == false) {
+      Mouse.init();
+      Mouse.isInitialized = true;
+    }
+    return {
+      connect: function(func) {
+        Mouse.MouseMoveFunctions.push(func);
+      }
+    };
+  }
 }
 
 Mouse.MouseDown.connect(function(e) {});
@@ -257,6 +274,8 @@ Mouse.MouseDown.connect(function(e) {});
 Mouse.MouseUp.connect(function(e) {});
 
 Mouse.Click.connect(function(e) {});
+
+Mouse.MouseMove.connect(function(e) {});
 
 class RaisedButton {
   constructor(Width, Height) {
