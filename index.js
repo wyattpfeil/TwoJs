@@ -460,8 +460,8 @@ class TextButton {
   set size(NewSize) {
     this.setPropertyAndUpdate("size", NewSize);
     this.backtangle.size = NewSize;
-    this.scaleTextToButton()
     this.setRectangleToBacktangle(this.rectangle, this.backtangle);
+    this.scaleTextToButton();
   }
   get size() {
     return this._size;
@@ -501,21 +501,29 @@ class TextButton {
   get text() {
     return this._text;
   }
-  scaleTextToButton(){
-    var ButtonSize = this.rectangle.size
-    var TextBoundingSize = Vector2.new((this.textlabel.boundingBoxSize.x/window.innerWidth).toFixed(3), (this.textlabel.boundingBoxSize.y/window.innerHeight).toFixed(3))
-    console.log(ButtonSize)
-    console.log(TextBoundingSize)
-    this.textlabel.size = 0
+  scaleTextToButton() {
+    var ButtonSize = this.rectangle.size;
+    var TextBoundingSize = Vector2.new(
+      (this.textlabel.boundingBoxSize.x / window.innerWidth).toFixed(3),
+      (this.textlabel.boundingBoxSize.y / window.innerHeight).toFixed(3)
+    );
+    console.log(ButtonSize);
+    console.log(TextBoundingSize);
+    this.textlabel.size = 0;
     var i;
     for (i = 0; i < 1000; i++) {
-      this.textlabel.size = this.textlabel.size + 0.001
-      var NewBoundingSizeX = ((this.textlabel.boundingBoxSize.x/window.innerWidth)/10).toFixed(3)
-      if (NewBoundingSizeX == (ButtonSize.x).toFixed(3)){
-        console.log("New text size is " + this.textlabel.size)
-        this.textSize = (this.textlabel.size/10)
-        this.textlabel.position = this.rectangle.position
-        break
+      this.textlabel.size = this.textlabel.size + 0.001;
+      var NewBoundingSizeX = (
+        this.textlabel.boundingBoxSize.x /
+        window.innerWidth /
+        10
+      ).toFixed(3);
+      if (NewBoundingSizeX == ButtonSize.x.toFixed(3)) {
+        console.log("Button size is " + ButtonSize.x);
+        console.log("New text size is " + this.textlabel.size);
+        this.textSize = this.textlabel.size / 10;
+        this.textlabel.position = this.rectangle.position;
+        break;
       } else {
       }
     }
@@ -617,15 +625,15 @@ class TextLabel {
     this.TextLabel.textContent = text;
     svgCanvas.appendChild(this.TextLabel);
     this.size = 0.1;
-    this.position = Vector2.new(0.5, 0.5)
-    this.fontFamily = "sans-serif"
+    this.position = Vector2.new(0.5, 0.5);
+    this.fontFamily = "sans-serif";
   }
   set text(NewText) {
-    this.TextLabel.textContent = NewText
-    this.setPropertyAndUpdate("text", NewText)
+    this.TextLabel.textContent = NewText;
+    this.setPropertyAndUpdate("text", NewText);
   }
   get text() {
-    return this._text
+    return this._text;
   }
   set size(NewSize) {
     this.TextLabel.setAttributeNS(null, "font-size", NewSize * 100 + "vw");
@@ -640,39 +648,39 @@ class TextLabel {
     this.TextLabel.setAttributeNS(
       null,
       "x",
-      (window.innerWidth * PosX - (this.boundingBoxSize.x/2)).toString()
+      (window.innerWidth * PosX - this.boundingBoxSize.x / 2).toString()
     );
     this.TextLabel.setAttributeNS(
       null,
       "y",
-      (window.innerHeight * PosY + (this.boundingBoxSize.y/4)).toString()
+      (window.innerHeight * PosY + this.boundingBoxSize.y / 4).toString()
     );
     this.setPropertyAndUpdate("position", NewPosition);
   }
   get position() {
     return this._position;
   }
-  set textColor(NewColor){
+  set textColor(NewColor) {
     var SVGColor =
       "#" + Color3.rgbToHex(NewColor.red, NewColor.green, NewColor.blue);
     this.TextLabel.setAttributeNS(null, "fill", SVGColor);
     this.setPropertyAndUpdate("textColor", NewColor);
   }
-  get textColor(){
-    return this._textColor
+  get textColor() {
+    return this._textColor;
   }
-  set fontFamily(NewFontFamily){
-    this.TextLabel.setAttributeNS(null, "font-family", NewFontFamily)
-    this.setPropertyAndUpdate("fontFamily", NewFontFamily)
+  set fontFamily(NewFontFamily) {
+    this.TextLabel.setAttributeNS(null, "font-family", NewFontFamily);
+    this.setPropertyAndUpdate("fontFamily", NewFontFamily);
   }
-  get fontFamily(){
-    return this._fontFamily
+  get fontFamily() {
+    return this._fontFamily;
   }
-  get boundingBoxSize(){
+  get boundingBoxSize() {
     var bbox = this.TextLabel.getBBox();
     var width = bbox.width;
     var height = bbox.height;
-    return Vector2.new(width, height)
+    return Vector2.new(width, height);
   }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;
@@ -695,13 +703,33 @@ class TextBox {
     };
     document.addEventListener("click", this.click.bind(this));
     //GEFLGHSDFLJDF
-    this.TextLabel.size = 0.23;
+    //this.TextLabel.size = 0.23;
     this.text = "Inser Text Here";
+    this.sizeTextToFitBox();
   }
-
+  sizeTextToFitBox() {
+    var i;
+    for (i = 0; i < 10000; i++) {
+      this.TextLabel.size = this.TextLabel.size + 0.001;
+      var NewBoundingSizeX = (
+        this.TextLabel.boundingBoxSize.x /
+        window.innerWidth /
+        10
+      ).toFixed(3);
+      if (NewBoundingSizeX == this.BackBox.size.x.toFixed(3)) {
+        var size = this.TextLabel.size;
+        this.TextLabel.size = size / 10;
+        this.TextLabel.position = this.BackBox.position;
+        console.log("New text size is " + this.TextLabel.size);
+        break;
+      } else {
+      }
+    }
+  }
   set size(NewSize) {
     this.BackBox.size = NewSize;
     this.TextLabel.size = NewSize.x;
+    this.sizeTextToFitBox();
     this.setPropertyAndUpdate("size", NewSize);
   }
   get size() {
@@ -737,6 +765,7 @@ class TextBox {
         this.BackBox.outlineColor = Color3.fromRGB(0, 0, 0);
         var TextWithoutCursor = this.TextLabel.text.slice(0, -1);
         this.TextLabel.text = TextWithoutCursor;
+        this.sizeTextToFitBox();
       }
     }
   }
@@ -811,14 +840,14 @@ class NewText {
     this.TextLabel.textContent = text;
     svgCanvas.appendChild(this.TextLabel);
     this.size = 0.1;
-    this.position = Vector2.new(0.5, 0.5)
+    this.position = Vector2.new(0.5, 0.5);
   }
   set text(NewText) {
-    this.TextLabel.textContent = NewText
-    this.setPropertyAndUpdate("text", NewText)
+    this.TextLabel.textContent = NewText;
+    this.setPropertyAndUpdate("text", NewText);
   }
   get text() {
-    return this._text
+    return this._text;
   }
   set size(NewSize) {
     this.TextLabel.setAttributeNS(null, "font-size", NewSize * 100 + "vw");
@@ -833,40 +862,40 @@ class NewText {
     this.TextLabel.setAttributeNS(
       null,
       "x",
-      (window.innerWidth * PosX - (this.boundingBoxSize.x/2)).toString()
+      (window.innerWidth * PosX - this.boundingBoxSize.x / 2).toString()
     );
     this.TextLabel.setAttributeNS(
       null,
       "y",
-      (window.innerHeight * PosY + (this.boundingBoxSize.y/4)).toString()
+      (window.innerHeight * PosY + this.boundingBoxSize.y / 4).toString()
     );
     this.setPropertyAndUpdate("position", NewPosition);
   }
   get position() {
     return this._position;
   }
-  set textColor(NewColor){
+  set textColor(NewColor) {
     var SVGColor =
       "#" + Color3.rgbToHex(NewColor.red, NewColor.green, NewColor.blue);
     this.TextLabel.setAttributeNS(null, "fill", SVGColor);
     this.setPropertyAndUpdate("textColor", NewColor);
   }
-  get textColor(){
-    return this._textColor
+  get textColor() {
+    return this._textColor;
   }
-  set fontFamily(NewFontFamily){
-    this.TextLabel.setAttributeNS(null, "font-family", NewFontFamily)
-    this.setPropertyAndUpdate("fontFamily", NewFontFamily)
+  set fontFamily(NewFontFamily) {
+    this.TextLabel.setAttributeNS(null, "font-family", NewFontFamily);
+    this.setPropertyAndUpdate("fontFamily", NewFontFamily);
   }
-  get fontFamily(){
-    return this._fontFamily
+  get fontFamily() {
+    return this._fontFamily;
   }
-  get boundingBoxSize(){
+  get boundingBoxSize() {
     var bbox = this.TextLabel.getBBox();
     var width = bbox.width;
     var height = bbox.height;
-    console.log(width + " " + height)
-    return Vector2.new(width, height)
+    console.log(width + " " + height);
+    return Vector2.new(width, height);
   }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;
@@ -874,31 +903,94 @@ class NewText {
   }
 }
 
+class NewTextBox {
+  constructor(text) {
+    var svgCanvas = document.querySelector("#canvasarea > svg");
+    this.Backtangle = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
+    this.textlabel = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+
+
+    this.svgContainer = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+    this.svgContainer.appendChild(this.Backtangle)
+    this.svgContainer.appendChild(this.textlabel)
+
+    svgCanvas.appendChild(this.svgContainer)
+
+
+    this.svgContainer.setAttributeNS(null, "width", "100")
+    this.svgContainer.setAttributeNS(null, "height", "100")
+    this.svgContainer.setAttributeNS(null, "version", "1.1")
+    this.svgContainer.setAttributeNS(null, "viewBox", "0 0 800 450")
+    this.Backtangle.setAttributeNS(null, "width", "100%")
+    this.Backtangle.setAttributeNS(null, "height", "100%")
+    this.Backtangle.setAttributeNS(null, "fill", "gray")
+
+    this.textlabel.setAttributeNS(null, "font-size", "10vw")
+    this.textlabel.setAttributeNS(null, "fill", "red")
+    this.textlabel.setAttributeNS(null, "y", "100")
+    this.textlabel.textContent = "Test"
+    /*this.textlabel.setAttributeNS(null, "x", "0")
+    this.textlabel.setAttributeNS(null, "y", "0")
+    this.textlabel.setAttributeNS(null, "font-size", "10vw")
+    this.textlabel.setAttributeNS(null, "fill", "white")
+    this.textlabel.textContent = "Test"
+    this.textlabel.textContent = text;
+    this.Backtangle.appendChild(this.textlabel);
+    svgCanvas.appendChild(this.Backtangle);
+    this.size = Vector2.new(0.1, 0.1);*/
+  }
+  set size(NewSize) {
+    var SizeX = window.innerWidth * NewSize.x;
+    var SizeY = window.innerHeight * NewSize.y;
+    this.Backtangle.setAttributeNS(null, "width", SizeX.toString());
+    this.Backtangle.setAttributeNS(null, "height", SizeY.toString());
+    this.setPropertyAndUpdate("size", NewSize);
+  }
+  get size() {
+    return this._size;
+  }
+  setPropertyAndUpdate(PropName, PropValue) {
+    this["_" + PropName] = PropValue;
+    two.update();
+  }
+}
+
+document.addEventListener("keydown", logKey);
+
 function logKey(e) {
   if (CurrentTextBox == null) {
   } else {
-    console.log(e.code);
+    //console.log(e.code);
     var KeyCode = e.code;
-    console.log(CurrentTextBox);
+    //console.log(CurrentTextBox);
     var BaseNum = 0.23;
     var BaseSize = 22.5;
     function updateTextSize() {
-      //CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*5.3
+      /* //CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*5.3
       if (CurrentTextBox.text.length <= CurrentTextBox.size.x * BaseSize) {
         //CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*5.3
         CurrentTextBox.TextLabel.size = BaseNum;
       } else {
         CurrentTextBox.TextLabel.size =
           (CurrentTextBox.size.x / CurrentTextBox.text.length) * 4.5;
-      }
+      }*/
+      CurrentTextBox.sizeTextToFitBox();
     }
     var ShiftDown = false;
-    console.log(e.key);
+    //console.log(e.key);
     if (KeyCode.includes("Key")) {
     }
     if (KeyCode == "Backspace") {
+      console.log("Backspace pressed");
       CurrentTextBox.text =
         CurrentTextBox.text.substring(0, CurrentTextBox.text.length - 2) + "|";
+      updateTextSize();
     } else if (e.key == "Shift") {
     } else if (e.key == "Tab") {
       CurrentTextBox.text = CurrentTextBox.text.substring(
@@ -927,7 +1019,6 @@ function logKey(e) {
         clipboardData = e.clipboardData || window.clipboardData;
         pastedData = clipboardData.getData("Text");
         CurrentTextBox.text = CurrentTextBox.text + pastedData;
-        updateTextSize();
         input.remove();
       }
 
@@ -957,7 +1048,6 @@ function logKey(e) {
           CurrentTextBox.text.length - 1
         );
         CurrentTextBox.text = CurrentTextBox.text + pastedData + "|";
-        updateTextSize();
         input.remove();
       }
 
@@ -978,6 +1068,7 @@ function logKey(e) {
       );
       CurrentTextBox.text = CurrentTextBox.text + e.key + "|";
     }
-    updateTextSize();
+    //updateTextSize();
+    //CurrentTextBox.sizeTextToFitBox();
   }
 }
