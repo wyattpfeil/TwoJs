@@ -23,11 +23,20 @@ CloseButton.onButtonClicked = function() {
     }
 };
 
-var MouseCoordinates = new TextLabel("Mouse Coordinates:")
-MouseCoordinates.position = Vector2.new(0.07,0.95)
+var MouseCoordinates = new NewText("Mouse Coordinates:")
 
+
+MouseCoordinates.size = 0.01
+MouseCoordinates.position = Vector2.new(0.05,0.98)
+MouseCoordinates.fontFamily = "sans-serif"
 Mouse.MouseMove.connect(function(e){
+    console.log("Mouse moved")
     var xPosInPixels = e.x
     var yPosInPixels = e.y
     MouseCoordinates.text = "Mouse Coordinates: x = " + (xPosInPixels / window.innerWidth).toFixed(2) + ", y = " + (yPosInPixels / window.window.innerHeight).toFixed(2)
 })
+
+var NewText1 = new NewText("hi")
+NewText1.textColor = Color3.fromRGB(255, 0 ,0)
+NewText1.size = 0.1
+NewText1.position = Vector2.new(0.5,0.5)
