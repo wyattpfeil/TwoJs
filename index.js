@@ -460,6 +460,7 @@ class TextButton {
   set size(NewSize) {
     this.setPropertyAndUpdate("size", NewSize);
     this.backtangle.size = NewSize;
+    this.scaleTextToButton()
     this.setRectangleToBacktangle(this.rectangle, this.backtangle);
   }
   get size() {
@@ -499,6 +500,25 @@ class TextButton {
   }
   get text() {
     return this._text;
+  }
+  scaleTextToButton(){
+    var ButtonSize = this.rectangle.size
+    var TextBoundingSize = Vector2.new((this.textlabel.boundingBoxSize.x/window.innerWidth).toFixed(3), (this.textlabel.boundingBoxSize.y/window.innerHeight).toFixed(3))
+    console.log(ButtonSize)
+    console.log(TextBoundingSize)
+    this.textlabel.size = 0
+    var i;
+    for (i = 0; i < 1000; i++) {
+      this.textlabel.size = this.textlabel.size + 0.001
+      var NewBoundingSizeX = ((this.textlabel.boundingBoxSize.x/window.innerWidth)/10).toFixed(3)
+      if (NewBoundingSizeX == (ButtonSize.x).toFixed(3)){
+        console.log("New text size is " + this.textlabel.size)
+        this.textSize = (this.textlabel.size/10)
+        this.textlabel.position = this.rectangle.position
+        break
+      } else {
+      }
+    }
   }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;
@@ -588,49 +608,71 @@ class Button {
 }
 
 class TextLabel {
-  constructor(Text) {
-    this.TwoTextLabel = two.makeText(
-      Text,
-      window.innerWidth / 2,
-      window.innerHeight / 2
+  constructor(text) {
+    var svgCanvas = document.querySelector("#canvasarea > svg");
+    this.TextLabel = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
     );
-    two.update();
+    this.TextLabel.textContent = text;
+    svgCanvas.appendChild(this.TextLabel);
+    this.size = 0.1;
+    this.position = Vector2.new(0.5, 0.5)
+    this.fontFamily = "sans-serif"
   }
   set text(NewText) {
-    this.TwoTextLabel.value = NewText;
-    this.setPropertyAndUpdate("text", NewText);
+    this.TextLabel.textContent = NewText
+    this.setPropertyAndUpdate("text", NewText)
   }
   get text() {
-    return this._text;
-  }
-  set textColor(NewColor) {
-    this.TwoTextLabel.fill =
-      "#" + Color3.rgbToHex(NewColor.red, NewColor.green, NewColor.blue);
-    this.setPropertyAndUpdate("textColor", NewColor);
-  }
-  get textColor() {
-    return this._textColor;
+    return this._text
   }
   set size(NewSize) {
-    this.TwoTextLabel.size =
-      (NewSize * ((window.innerWidth + window.innerHeight) / 2)) / 2;
+    this.TextLabel.setAttributeNS(null, "font-size", NewSize * 100 + "vw");
     this.setPropertyAndUpdate("size", NewSize);
   }
   get size() {
     return this._size;
   }
   set position(NewPosition) {
-    console.log("Position changed");
-    var NewX = NewPosition.x;
-    var NewY = NewPosition.y;
-    this.TwoTextLabel.translation.set(
-      window.innerWidth * NewX,
-      window.innerHeight * NewY
+    var PosX = NewPosition.x;
+    var PosY = NewPosition.y;
+    this.TextLabel.setAttributeNS(
+      null,
+      "x",
+      (window.innerWidth * PosX - (this.boundingBoxSize.x/2)).toString()
+    );
+    this.TextLabel.setAttributeNS(
+      null,
+      "y",
+      (window.innerHeight * PosY + (this.boundingBoxSize.y/4)).toString()
     );
     this.setPropertyAndUpdate("position", NewPosition);
   }
   get position() {
     return this._position;
+  }
+  set textColor(NewColor){
+    var SVGColor =
+      "#" + Color3.rgbToHex(NewColor.red, NewColor.green, NewColor.blue);
+    this.TextLabel.setAttributeNS(null, "fill", SVGColor);
+    this.setPropertyAndUpdate("textColor", NewColor);
+  }
+  get textColor(){
+    return this._textColor
+  }
+  set fontFamily(NewFontFamily){
+    this.TextLabel.setAttributeNS(null, "font-family", NewFontFamily)
+    this.setPropertyAndUpdate("fontFamily", NewFontFamily)
+  }
+  get fontFamily(){
+    return this._fontFamily
+  }
+  get boundingBoxSize(){
+    var bbox = this.TextLabel.getBBox();
+    var width = bbox.width;
+    var height = bbox.height;
+    return Vector2.new(width, height)
   }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;
