@@ -3,6 +3,30 @@ var params = { width: window.innerWidth, height: window.innerHeight };
 var two = new Two(params).appendTo(elem);
 var CurrentTextBox;
 
+var Objects = {}
+
+function getAllObjects(){
+  var Positions = {}
+  for (index = 0; index < Objects.length; ++index) {
+    Obj = Objects[0][index]
+    var Position = Obj._position
+    console.log(Position)
+    Positions[index] = Position
+  }
+  return Positions
+}
+
+
+function makeName(length) {
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 class Color3 {
   static fromRGB(red, green, blue) {
     return { red: red, green: green, blue: blue };
@@ -110,12 +134,14 @@ class Vector2 {
 
 class Rectangle {
   constructor(Width, Height) {
+    var Name = "Rectangle" + makeName(10)
     this.tworect = two.makeRectangle(
       window.innerWidth / 2,
       window.innerHeight / 2,
       window.innerWidth * Width,
       window.innerHeight * Height
     );
+    Objects[Name] = this
     this.position = Vector2.new(0.5, 0.5);
     this.size = Vector2.new(Width, Height);
     this.innerColor = Color3.fromRGB(255, 0, 0);
@@ -279,6 +305,8 @@ Mouse.MouseMove.connect(function(e) {});
 
 class RaisedButton {
   constructor(Width, Height) {
+    var Name = "RaisedButton" + makeName(10)
+    Objects[Name] = this
     this.rectangle = new Rectangle(Width, Height);
     this.backtangle = new Rectangle(Width, Height);
     this.size = Vector2.new(Width, Height);
@@ -381,6 +409,8 @@ class RaisedButton {
 
 class TextButton {
   constructor(Width, Height) {
+    var Name = "TextButton" + makeName(10)
+    Objects[Name] = this
     this.rectangle = new Rectangle(Width, Height);
     this.backtangle = new Rectangle(Width, Height);
     this.textlabel = new TextLabel("Button");
@@ -496,6 +526,7 @@ class TextButton {
   }
   set text(NewText) {
     this.textlabel.text = NewText;
+    this.scaleTextToButton()
     this.setPropertyAndUpdate("text", NewText);
   }
   get text() {
@@ -511,21 +542,33 @@ class TextButton {
     console.log(TextBoundingSize);
     this.textlabel.size = 0;
     var i;
-    for (i = 0; i < 1000; i++) {
-      this.textlabel.size = this.textlabel.size + 0.001;
-      var NewBoundingSizeX = (
-        this.textlabel.boundingBoxSize.x /
-        window.innerWidth /
-        10
-      ).toFixed(3);
-      if (NewBoundingSizeX == ButtonSize.x.toFixed(3)) {
-        console.log("Button size is " + ButtonSize.x);
-        console.log("New text size is " + this.textlabel.size);
-        this.textSize = this.textlabel.size / 10;
-        this.textlabel.position = this.rectangle.position;
-        break;
-      } else {
-      }
+    
+    while(true){
+        this.textlabel.size = this.textlabel.size + 0.001;
+        var NewBoundingSizeX = (
+          this.textlabel.boundingBoxSize.x /
+          window.innerWidth /
+          10
+        ).toFixed(3);
+        var NewBoundingSizeY = (
+          this.textlabel.boundingBoxSize.y /
+          window.innerHeight /
+          10
+        ).toFixed(3);
+        if (NewBoundingSizeX >= ButtonSize.x.toFixed(3)) {
+          console.log("Button size is " + ButtonSize.x);
+          console.log("New text size is " + this.textlabel.size);
+          this.textSize = this.textlabel.size / 10;
+          this.textlabel.position = this.rectangle.position;
+          break;
+        }
+        if (NewBoundingSizeY >= ButtonSize.y.toFixed(3)){
+          console.log("Button size is " + ButtonSize.x);
+          console.log("New text size is " + this.textlabel.size);
+          this.textSize = this.textlabel.size / 10;
+          this.textlabel.position = this.rectangle.position;
+          break;
+        }
     }
   }
   setPropertyAndUpdate(PropName, PropValue) {
@@ -536,6 +579,8 @@ class TextButton {
 
 class Button {
   constructor(Width, Height) {
+    var Name = "Button" + makeName(10)
+    Objects[Name] = this
     this.rectangle = new Rectangle(Width, Height);
     this.onButtonClicked = function() {};
     document.addEventListener("click", this.click.bind(this));
@@ -617,6 +662,8 @@ class Button {
 
 class TextLabel {
   constructor(text) {
+    var Name = "TextLabel" + makeName(10)
+    Objects[Name] = this
     var svgCanvas = document.querySelector("#canvasarea > svg");
     this.TextLabel = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -690,6 +737,8 @@ class TextLabel {
 
 class TextBox {
   constructor(Text) {
+    var Name = "TextBox" + makeName(10)
+    Objects[Name] = this
     this.BackBox = new Rectangle(0.1, 0.1);
     this.BackBox.innerColor = Color3.fromRGB(255, 255, 255);
     this.TextLabel = new TextLabel(Text);
@@ -707,16 +756,28 @@ class TextBox {
     this.text = "Inser Text Here";
     this.sizeTextToFitBox();
   }
-  sizeTextToFitBox() {
-    var i;
-    for (i = 0; i < 10000; i++) {
-      this.TextLabel.size = this.TextLabel.size + 0.001;
+  sizeTextToFitBox(Removing) {
+    var Delta;
+    if (Removing == true) {
+      Delta = -0.001;
+    } else {
+      Delta = 0.001;
+    }
+    var counter = 0
+    while (true) {
+      counter = counter + 1
+      this.TextLabel.size = this.TextLabel.size + Delta;
       var NewBoundingSizeX = (
         this.TextLabel.boundingBoxSize.x /
         window.innerWidth /
         10
       ).toFixed(3);
-      if (NewBoundingSizeX == this.BackBox.size.x.toFixed(3)) {
+      var NewBoundingSizeY = (
+        this.TextLabel.boundingBoxSize.y /
+        window.innerHeight /
+        10
+      ).toFixed(3);
+      if (NewBoundingSizeX >= this.BackBox.size.x.toFixed(3)) {
         var size = this.TextLabel.size;
         this.TextLabel.size = size / 10;
         this.TextLabel.position = this.BackBox.position;
@@ -724,7 +785,17 @@ class TextBox {
         break;
       } else {
       }
+      if (NewBoundingSizeY >= this.BackBox.size.y.toFixed(3)){
+        var size = this.TextLabel.size;
+        this.TextLabel.size = size / 10;
+        this.TextLabel.position = this.BackBox.position;
+        console.log("New text size is " + this.TextLabel.size);
+        break;
+      }
     }
+    
+    console.log("count is " + counter)
+    //for (i = 0; i < 1000; i++) {}
   }
   set size(NewSize) {
     this.BackBox.size = NewSize;
@@ -796,6 +867,8 @@ class TextBox {
 
 class Image {
   constructor(Image) {
+    var Name = "Image" + makeName(10)
+    Objects[Name] = this
     var svgCanvas = document.querySelector("#canvasarea > svg");
     this.Img = document.createElementNS("http://www.w3.org/2000/svg", "image");
     this.Img.setAttributeNS("http://www.w3.org/1999/xlink", "href", Image);
@@ -823,137 +896,6 @@ class Image {
   }
   get position() {
     return this._position;
-  }
-  setPropertyAndUpdate(PropName, PropValue) {
-    this["_" + PropName] = PropValue;
-    two.update();
-  }
-}
-
-class NewText {
-  constructor(text) {
-    var svgCanvas = document.querySelector("#canvasarea > svg");
-    this.TextLabel = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "text"
-    );
-    this.TextLabel.textContent = text;
-    svgCanvas.appendChild(this.TextLabel);
-    this.size = 0.1;
-    this.position = Vector2.new(0.5, 0.5);
-  }
-  set text(NewText) {
-    this.TextLabel.textContent = NewText;
-    this.setPropertyAndUpdate("text", NewText);
-  }
-  get text() {
-    return this._text;
-  }
-  set size(NewSize) {
-    this.TextLabel.setAttributeNS(null, "font-size", NewSize * 100 + "vw");
-    this.setPropertyAndUpdate("size", NewSize);
-  }
-  get size() {
-    return this._size;
-  }
-  set position(NewPosition) {
-    var PosX = NewPosition.x;
-    var PosY = NewPosition.y;
-    this.TextLabel.setAttributeNS(
-      null,
-      "x",
-      (window.innerWidth * PosX - this.boundingBoxSize.x / 2).toString()
-    );
-    this.TextLabel.setAttributeNS(
-      null,
-      "y",
-      (window.innerHeight * PosY + this.boundingBoxSize.y / 4).toString()
-    );
-    this.setPropertyAndUpdate("position", NewPosition);
-  }
-  get position() {
-    return this._position;
-  }
-  set textColor(NewColor) {
-    var SVGColor =
-      "#" + Color3.rgbToHex(NewColor.red, NewColor.green, NewColor.blue);
-    this.TextLabel.setAttributeNS(null, "fill", SVGColor);
-    this.setPropertyAndUpdate("textColor", NewColor);
-  }
-  get textColor() {
-    return this._textColor;
-  }
-  set fontFamily(NewFontFamily) {
-    this.TextLabel.setAttributeNS(null, "font-family", NewFontFamily);
-    this.setPropertyAndUpdate("fontFamily", NewFontFamily);
-  }
-  get fontFamily() {
-    return this._fontFamily;
-  }
-  get boundingBoxSize() {
-    var bbox = this.TextLabel.getBBox();
-    var width = bbox.width;
-    var height = bbox.height;
-    console.log(width + " " + height);
-    return Vector2.new(width, height);
-  }
-  setPropertyAndUpdate(PropName, PropValue) {
-    this["_" + PropName] = PropValue;
-    two.update();
-  }
-}
-
-class NewTextBox {
-  constructor(text) {
-    var svgCanvas = document.querySelector("#canvasarea > svg");
-    this.Backtangle = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "rect"
-    );
-    this.textlabel = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "text"
-    );
-
-
-    this.svgContainer = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-    this.svgContainer.appendChild(this.Backtangle)
-    this.svgContainer.appendChild(this.textlabel)
-
-    svgCanvas.appendChild(this.svgContainer)
-
-
-    this.svgContainer.setAttributeNS(null, "width", "100")
-    this.svgContainer.setAttributeNS(null, "height", "100")
-    this.svgContainer.setAttributeNS(null, "version", "1.1")
-    this.svgContainer.setAttributeNS(null, "viewBox", "0 0 800 450")
-    this.Backtangle.setAttributeNS(null, "width", "100%")
-    this.Backtangle.setAttributeNS(null, "height", "100%")
-    this.Backtangle.setAttributeNS(null, "fill", "gray")
-
-    this.textlabel.setAttributeNS(null, "font-size", "10vw")
-    this.textlabel.setAttributeNS(null, "fill", "red")
-    this.textlabel.setAttributeNS(null, "y", "100")
-    this.textlabel.textContent = "Test"
-    /*this.textlabel.setAttributeNS(null, "x", "0")
-    this.textlabel.setAttributeNS(null, "y", "0")
-    this.textlabel.setAttributeNS(null, "font-size", "10vw")
-    this.textlabel.setAttributeNS(null, "fill", "white")
-    this.textlabel.textContent = "Test"
-    this.textlabel.textContent = text;
-    this.Backtangle.appendChild(this.textlabel);
-    svgCanvas.appendChild(this.Backtangle);
-    this.size = Vector2.new(0.1, 0.1);*/
-  }
-  set size(NewSize) {
-    var SizeX = window.innerWidth * NewSize.x;
-    var SizeY = window.innerHeight * NewSize.y;
-    this.Backtangle.setAttributeNS(null, "width", SizeX.toString());
-    this.Backtangle.setAttributeNS(null, "height", SizeY.toString());
-    this.setPropertyAndUpdate("size", NewSize);
-  }
-  get size() {
-    return this._size;
   }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;
@@ -990,7 +932,7 @@ function logKey(e) {
       console.log("Backspace pressed");
       CurrentTextBox.text =
         CurrentTextBox.text.substring(0, CurrentTextBox.text.length - 2) + "|";
-      updateTextSize();
+      // updateTextSize();
     } else if (e.key == "Shift") {
     } else if (e.key == "Tab") {
       CurrentTextBox.text = CurrentTextBox.text.substring(
@@ -1068,7 +1010,12 @@ function logKey(e) {
       );
       CurrentTextBox.text = CurrentTextBox.text + e.key + "|";
     }
-    //updateTextSize();
+    if (KeyCode == "Backspace") {
+      updateTextSize(true);
+    } else {
+      updateTextSize(false);
+    }
+
     //CurrentTextBox.sizeTextToFitBox();
   }
 }
