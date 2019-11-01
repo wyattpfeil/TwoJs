@@ -17,8 +17,9 @@ track.addNote({
 })
 
 console.log(track)
-
-
+var data = {"Test" : "Testing"}
+const url='https://midi-downloader.glitch.me/download';
+$.post(url, data)
 
 var MidiToNames = [
     "A0",
