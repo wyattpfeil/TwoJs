@@ -150,12 +150,13 @@ EnableSizerTool()
 console.log(Objects)
 console.log(getAllObjects())
 
-var TestingRect1 = new Rectangle(0.25, 0.25)
-var TestingRect2 = new Rectangle(0.25, 0.25)
-TestingRect1.innerColor = Color3.fromRGB(255,0,0)
-TestingRect2.innerColor = Color3.fromRGB(0,255,0)
-TestingRect1.BringToFront()
-ReLayerObjects()
-TestingRect1.layer = 15
-TestingRect2.layer = 19
-ReLayerObjects()
+console.log(Objects)
+
+var TestTangle = new Rectangle(0.25, 0.25)
+TestTangle.position = Vector2.new(0.1, 0.1)
+var TextL = new TextLabel("Hi!")
+TextL.position = Vector2.new(0.1, 0.1)
+
+TestTangle.layer = 20
+TextL.layer = 19
+SizerToolButton.layer = 100

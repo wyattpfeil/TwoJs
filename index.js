@@ -11,21 +11,27 @@ Array.prototype.insert = function ( index, item ) {
 
 function ReLayerObjects() {
   LayerOrder = []
-  for (var ObjName in Objects) {
-    if(ObjName.includes("Rectangle")){
-      var Obj = Objects[ObjName]
-      ObjectLayer = Obj.layer
-      LayerOrder.insert(ObjectLayer, Obj)
+  function LoopOverObjects(ObjectType){
+    for (var ObjName in Objects) {
+      //if(ObjName.includes(ObjectType)){
+        var Obj = Objects[ObjName]
+        ObjectLayer = Obj.layer
+        LayerOrder.insert(ObjectLayer, Obj)
+      //}
     }
+    var SortedLayerOrder = LayerOrder.slice(0);
+    SortedLayerOrder.sort(function(a,b) {
+        return a.layer - b.layer;
+    });
+    for (let i = SortedLayerOrder.length - 1; i >=0 ; i--) {
+      var Obj = SortedLayerOrder[i]
+      Obj.BringToFront()
+    }
+    LayerOrder = []
   }
-  var SortedLayerOrder = LayerOrder.slice(0);
-  SortedLayerOrder.sort(function(a,b) {
-      return a.layer - b.layer;
-  });
-  for (let i = SortedLayerOrder.length - 1; i >=0 ; i--) {
-    var Obj = SortedLayerOrder[i]
-    Obj.BringToFront()
-  }
+  /*LoopOverObjects("Rectangle")
+  //LoopOverObjects("TextLabel")
+  LoopOverObjects("TextButton")*/
 }
 
 function getAllObjects() {
@@ -245,8 +251,8 @@ class Rectangle {
     return this._visible;
   }
   set layer(NewLayer) {
-    ReLayerObjects()
     this.setPropertyAndUpdate("layer", NewLayer);
+    ReLayerObjects()
   }
   get layer() {
     return this._layer;
@@ -453,8 +459,10 @@ class TextButton {
     this.backtangle = new Rectangle(Width, Height);
     this.textlabel = new TextLabel("Button");
     this.size = Vector2.new(Width, Height);
+    
     this.setRectangleToBacktangle(this.rectangle, this.backtangle);
-
+    var TotalObjectsNumber = Object.keys(Objects).length + 1
+    this.layer = TotalObjectsNumber
     this.backtangle.opacity = 0.5;
     this.onButtonClicked = function() {};
     document.addEventListener("click", this.click.bind(this));
@@ -569,6 +577,20 @@ class TextButton {
   }
   get text() {
     return this._text;
+  }
+  set layer(NewLayer) {
+    this.setPropertyAndUpdate("layer", NewLayer);
+    ReLayerObjects()
+  }
+  get layer() {
+    return this._layer
+  }
+  BringToFront() {
+    if(this.backtangle != null) {
+      document.querySelector("#two_0").appendChild(this.backtangle.SVGElement)
+      document.querySelector("#two_0").appendChild(this.rectangle.SVGElement)
+      document.querySelector("#canvasarea > svg").appendChild(this.textlabel.TextLabel);
+    }
   }
   scaleTextToButton() {
     var ButtonSize = this.rectangle.size;
@@ -766,6 +788,16 @@ class TextLabel {
     var width = bbox.width;
     var height = bbox.height;
     return Vector2.new(width, height);
+  }
+  set layer(NewLayer) {
+    this.setPropertyAndUpdate("layer", NewLayer)
+    ReLayerObjects()
+  }
+  get layer() {
+    return this._layer
+  }
+  BringToFront() {
+    document.querySelector("#canvasarea > svg").appendChild(this.TextLabel);
   }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;
