@@ -103,7 +103,8 @@ function EnableSizerTool(){
         console.log(ButtonSize);
         console.log(TextBoundingSize);
         DimensionLabel.size = 0;
-
+        Rect.BringToFront()
+        DimensionLabel.BringToFront()
         function SizeDimensionLabel(){
           while(true){
             DimensionLabel.size = DimensionLabel.size + 0.001;
