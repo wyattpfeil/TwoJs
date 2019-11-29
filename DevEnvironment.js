@@ -161,3 +161,13 @@ TextL.position = Vector2.new(0.1, 0.1)
 TestTangle.layer = 20
 TextL.layer = 19
 SizerToolButton.layer = 100
+
+var TestFolder = new Folder()
+TestFolder.addChild("Test")
+TestFolder.addChild("Testing")
+var LoopIndex = 0
+TestFolder.forEachChild(function(){
+  console.log(TestFolder.getChildByIndex(LoopIndex))
+  LoopIndex = LoopIndex + 1
+})
+console.log(TestFolder.getChildren())
