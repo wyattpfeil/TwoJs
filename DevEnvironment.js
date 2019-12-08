@@ -171,3 +171,9 @@ TestFolder.forEachChild(function(){
   LoopIndex = LoopIndex + 1
 })
 console.log(TestFolder.getChildren())
+console.log("Mouse position is " + Mouse.position)
+
+var TestButton = new Button(0.1, 0.1)
+TestButton.onMouseHover = function() {
+  console.log("Mouse Hovered!")
+}
