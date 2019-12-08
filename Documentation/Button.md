@@ -73,6 +73,7 @@ Code Sample 2 prints the color of the button to the console.
 ***
 # <a name="events"></a> Events
  - [onButtonClicked](#onButtonClicked)
+ - [onMouseHover](#onMouseHover)
 ***
 ## <a name="onButtonClicked"></a> onButtonClicked
 
@@ -84,4 +85,15 @@ Button.onButtonClicked = function() {
 }
 ```
 Sample 1 prints "Button Clicked!" when the user clicks the button.
+***
+## <a name="onMouseHover"></a> onMouseHover
+
+**Fires when the user moves their mouse over the button.**
+
+```javascript
+Button.onMouseHover = function() {
+    console.log("Mouse Hovered!")
+}
+```
+Sample 1 prints "Mouse Hovered!" when the user hovers over the button.
 ***
