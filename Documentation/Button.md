@@ -25,6 +25,7 @@ Code Sample 1 shows the creation of a button that has a height of 10% of the win
  - [position](#position)
  - [size](#size)
  - [innerColor](#innerColor)
+ - [rotation](#rotation)
 ***
 ## <a name="position"></a> position (Get/Set)
 
@@ -55,6 +56,20 @@ Code Sample 1 sets the size of the button to 10% of the windows width and 10% of
 console.log(Button.size)
 ```
 Code Sample 2 prints the size of the button to the console.
+
+***
+
+## <a name="rotation"></a> rotation (Get/Set)
+**Returns the rotation of the button as a number.**
+```javascript
+Button.rotation = 180
+```
+Code sample 1 flips the button upsidedown.
+
+```javascript
+console.log(Button.rotation)
+```
+Code Sample 2 prints the rotation of the button to the console.
 
 ***
 

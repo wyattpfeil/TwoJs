@@ -98,6 +98,14 @@ class Rectangle {
     get layer() {
       return this._layer;
     }
+    set rotation(NewRotation) {
+      //Formula for degrees to radians is degrees * pi / 180
+      this.tworect.rotation = NewRotation * Math.PI / 180
+      this.setPropertyAndUpdate("rotation", NewRotation)
+    }
+    get rotation() {
+      return this._rotation
+    }
     BringToFront() {
       document.querySelector("#two_0").appendChild(this.SVGElement);
     }

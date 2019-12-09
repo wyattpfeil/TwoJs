@@ -84,6 +84,14 @@ class TextBox {
     get position() {
       return this._position;
     }
+    set rotation(NewRotation) {
+      this.BackBox.rotation = NewRotation
+      this.TextLabel.rotation = NewRotation
+      this.setPropertyAndUpdate("rotation", NewRotation)
+    }
+    get rotation() {
+      return this._rotation
+    }
     setPropertyAndUpdate(PropName, PropValue) {
       this["_" + PropName] = PropValue;
       two.update();

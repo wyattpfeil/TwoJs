@@ -132,6 +132,15 @@ class TextButton {
     get layer() {
       return this._layer
     }
+    set rotation(NewRotation) {
+      this.backtangle.rotation = NewRotation
+      this.rectangle.rotation = NewRotation
+      this.textlabel.rotation = NewRotation
+      this.setPropertyAndUpdate("rotation", NewRotation)
+    }
+    get rotation() {
+      return this._rotation
+    }
     BringToFront() {
       if(this.backtangle != null) {
         document.querySelector("#two_0").appendChild(this.backtangle.SVGElement)

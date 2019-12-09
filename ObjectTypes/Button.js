@@ -90,6 +90,13 @@ class Button {
   get innerColor() {
     return this._innerColor;
   }
+  set rotation(NewRotation) {
+    this.rectangle.rotation = NewRotation
+    this.setPropertyAndUpdate("rotation", NewRotation)
+  }
+  get rotation() {
+    return this._rotation
+  }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;
     two.update();

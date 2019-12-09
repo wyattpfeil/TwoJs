@@ -73,6 +73,16 @@ class TextLabel {
     get layer() {
       return this._layer
     }
+    set rotation(NewRotation) {
+      var bbox = this.TextLabel.getBBox();
+      var cx = bbox.x + bbox.width/2;
+      var cy = bbox.y + bbox.height/2;
+      this.TextLabel.setAttribute("transform", "rotate(" + NewRotation + "," + cx + "," + cy + ")")
+      this.setPropertyAndUpdate("rotation", NewRotation)
+    }
+    get rotation() {
+      return this._rotation
+    }
     BringToFront() {
       document.querySelector("#two_0").appendChild(this.TextLabel);
     }

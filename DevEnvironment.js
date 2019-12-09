@@ -153,15 +153,6 @@ console.log(getAllObjects())
 
 console.log(Objects)
 
-var TestTangle = new Rectangle(0.25, 0.25)
-TestTangle.position = Vector2.new(0.1, 0.1)
-var TextL = new TextLabel("Hi!")
-TextL.position = Vector2.new(0.1, 0.1)
-
-TestTangle.layer = 20
-TextL.layer = 19
-SizerToolButton.layer = 100
-
 var TestFolder = new Folder()
 TestFolder.addChild("Test")
 TestFolder.addChild("Testing")
@@ -174,10 +165,10 @@ console.log(TestFolder.getChildren())
 console.log("Mouse position is " + Mouse.position)
 
 var Rectangle7 = new Rectangle(0.3, 0.2)
-Rectangle7.innerColor = Color3.fromRGB(0, 255, 0)
+Rectangle7.innerColor = Color3.fromRGB(245, 66, 66)
 async function AsyncCode(){ 
   await Tween.TweenVector(Rectangle7, "size", Vector2.new(0.2, 0.2), 0.2)
-  await Tween.TweenVector(Rectangle7, "position", Vector2.new(0.1, 0.1), 2)
+  await Tween.TweenVector(Rectangle7, "position", Vector2.new(0.1, 0.2), 2)
   await Tween.TweenVector(Rectangle7, "position", Vector2.new(0.5, 0.9), 2)
   await Tween.TweenVector(Rectangle7, "position", Vector2.new(0.9, 0.5), 2)
   await Tween.TweenVector(Rectangle7, "position", Vector2.new(0.6, 0.1), 2)
@@ -185,9 +176,18 @@ async function AsyncCode(){
   await Tween.TweenVector(Rectangle7, "size", Vector2.new(0, 0), 0.5)
 }
 async function AsyncColorCode(){
-  await Tween.TweenColor(Rectangle7, "innerColor", Color3.fromRGB(255, 0, 0), 3)
-  await Tween.TweenColor(Rectangle7, "innerColor", Color3.fromRGB(0, 255, 0), 3)
-  await Tween.TweenColor(Rectangle7, "innerColor", Color3.fromRGB(0, 0, 255), 3)
+  await Tween.TweenColor(Rectangle7, "innerColor", Color3.fromRGB(245, 155, 66), 3)
+  await Tween.TweenColor(Rectangle7, "innerColor", Color3.fromRGB(245, 236, 66), 3)
+  await Tween.TweenColor(Rectangle7, "innerColor", Color3.fromRGB(66, 245, 84), 3)
 }
 AsyncCode()
 AsyncColorCode()
+console.log(Rectangle7.tworect.rotation)
+Rectangle7.rotation = 0
+Tween.TweenNumber(Rectangle7, "rotation", 500, 20)
+
+var Image1 = new Image("./santa-hat-merry-christmas-cartoon-icon-vector-10147096-removebg-preview.png")
+Image1.rotation = 180
+
+var NewButton = new TextButton(0.5, 0.5)
+NewButton.rotation = 45

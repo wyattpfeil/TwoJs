@@ -95,6 +95,15 @@ class RaisedButton {
     get innerColor() {
       return this._innerColor;
     }
+    set rotation(NewRotation) {
+      console.log("Set rotation")
+      this.rectangle.rotation = NewRotation
+      this.backtangle.rotation = NewRotation
+      this.setPropertyAndUpdate("rotation", NewRotation)
+    }
+    get rotation() {
+      return this._rotation
+    }
     setPropertyAndUpdate(PropName, PropValue) {
       this["_" + PropName] = PropValue;
       two.update();

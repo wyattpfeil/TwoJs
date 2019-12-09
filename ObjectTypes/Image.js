@@ -31,6 +31,16 @@ class Image {
     get position() {
       return this._position;
     }
+    set rotation(NewRotation) {
+      var bbox = this.Img.getBBox();
+      var cx = bbox.x + bbox.width/2;
+      var cy = bbox.y + bbox.height/2;
+      this.Img.setAttribute("transform", "rotate(" + NewRotation + "," + cx + "," + cy + ")")
+      this.setPropertyAndUpdate("rotation", NewRotation)
+    }
+    get rotation() {
+      return this._rotation
+    }
     setPropertyAndUpdate(PropName, PropValue) {
       this["_" + PropName] = PropValue;
       two.update();
