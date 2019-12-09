@@ -4,12 +4,15 @@ class Image {
       var Name = "Image" + makeName(10);
       Objects[Name] = this;
       var svgCanvas = document.querySelector("#canvasarea > svg");
+      var twoCanvas = document.querySelector("#two_0")
       this.Img = document.createElementNS("http://www.w3.org/2000/svg", "image");
       this.Img.setAttributeNS("http://www.w3.org/1999/xlink", "href", Image);
       this.Img.setAttributeNS(null, "width", "200");
       this.Img.setAttributeNS(null, "height", "200");
       this.Img.setAttribute("preserveAspectRatio", "none");
-      svgCanvas.appendChild(this.Img);
+      twoCanvas.appendChild(this.Img);
+      var TotalObjectsNumber = Object.keys(Objects).length + 1
+      this.layer = TotalObjectsNumber
     }
     set size(NewSize) {
       var SizeX = window.innerWidth * NewSize.x;
@@ -40,6 +43,13 @@ class Image {
     }
     get rotation() {
       return this._rotation
+    }
+    set layer(NewLayer) {
+      this.setPropertyAndUpdate("layer", NewLayer);
+      ReLayerObjects()
+    }
+    get layer() {
+      return this._layer;
     }
     setPropertyAndUpdate(PropName, PropValue) {
       this["_" + PropName] = PropValue;

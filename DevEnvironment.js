@@ -164,6 +164,9 @@ TestFolder.forEachChild(function(){
 console.log(TestFolder.getChildren())
 console.log("Mouse position is " + Mouse.position)
 
+var Image1 = new Image("./santa-hat-merry-christmas-cartoon-icon-vector-10147096-removebg-preview.png")
+Image1.rotation = 180
+
 var Rectangle7 = new Rectangle(0.3, 0.2)
 Rectangle7.innerColor = Color3.fromRGB(245, 66, 66)
 async function AsyncCode(){ 
@@ -185,9 +188,3 @@ AsyncColorCode()
 console.log(Rectangle7.tworect.rotation)
 Rectangle7.rotation = 0
 Tween.TweenNumber(Rectangle7, "rotation", 500, 20)
-
-var Image1 = new Image("./santa-hat-merry-christmas-cartoon-icon-vector-10147096-removebg-preview.png")
-Image1.rotation = 180
-
-var NewButton = new TextButton(0.5, 0.5)
-NewButton.rotation = 45
