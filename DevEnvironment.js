@@ -173,7 +173,21 @@ TestFolder.forEachChild(function(){
 console.log(TestFolder.getChildren())
 console.log("Mouse position is " + Mouse.position)
 
-var TestButton = new Button(0.1, 0.1)
-TestButton.onMouseHover = function() {
-  console.log("Mouse Hovered!")
+var Rectangle7 = new Rectangle(0.3, 0.2)
+Rectangle7.innerColor = Color3.fromRGB(0, 255, 0)
+async function AsyncCode(){ 
+  await Tween.TweenVector(Rectangle7, "size", Vector2.new(0.2, 0.2), 0.2)
+  await Tween.TweenVector(Rectangle7, "position", Vector2.new(0.1, 0.1), 2)
+  await Tween.TweenVector(Rectangle7, "position", Vector2.new(0.5, 0.9), 2)
+  await Tween.TweenVector(Rectangle7, "position", Vector2.new(0.9, 0.5), 2)
+  await Tween.TweenVector(Rectangle7, "position", Vector2.new(0.6, 0.1), 2)
+  await Tween.TweenVector(Rectangle7, "position", Vector2.new(0.5, 0.5), 1)
+  await Tween.TweenVector(Rectangle7, "size", Vector2.new(0, 0), 0.5)
 }
+async function AsyncColorCode(){
+  await Tween.TweenColor(Rectangle7, "innerColor", Color3.fromRGB(255, 0, 0), 3)
+  await Tween.TweenColor(Rectangle7, "innerColor", Color3.fromRGB(0, 255, 0), 3)
+  await Tween.TweenColor(Rectangle7, "innerColor", Color3.fromRGB(0, 0, 255), 3)
+}
+AsyncCode()
+AsyncColorCode()

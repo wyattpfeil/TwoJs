@@ -1,3 +1,7 @@
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
 class Rectangle {
     constructor(Width, Height) {
       var Name = "Rectangle" + makeName(10);

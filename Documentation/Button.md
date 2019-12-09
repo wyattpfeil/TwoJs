@@ -17,7 +17,7 @@ var Button = new Button(0.1, 0.1)
 
 Code Sample 1 shows the creation of a button that has a height of 10% of the window and a width of 10% of the window.
 
-**NOTE: When created, the width and height is _NOT_ to be specified as a Vector2.**
+**NOTE: When created, the width and height values are _NOT_ to be specified as Vector2 values.**
 
 ***
 
