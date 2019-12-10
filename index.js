@@ -1,37 +1,38 @@
 var elem = document.getElementById("canvasarea");
 var params = { width: window.innerWidth, height: window.innerHeight };
 var two = new Two(params).appendTo(elem);
+
 var CurrentTextBox;
 
 var Objects = {};
 
-Array.prototype.insert = function ( index, item ) {
-  this.splice( index, 0, item );
+Array.prototype.insert = function(index, item) {
+  this.splice(index, 0, item);
 };
 
 function ReLayerObjects() {
-  LayerOrder = []
-  function LoopOverObjects(ObjectType){
+  LayerOrder = [];
+  function LoopOverObjects(ObjectType) {
     for (var ObjName in Objects) {
       //if(ObjName.includes(ObjectType)){
-        var Obj = Objects[ObjName]
-        ObjectLayer = Obj.layer
-        LayerOrder.insert(ObjectLayer, Obj)
+      var Obj = Objects[ObjName];
+      ObjectLayer = Obj.layer;
+      LayerOrder.insert(ObjectLayer, Obj);
       //}
     }
     var SortedLayerOrder = LayerOrder.slice(0);
-    SortedLayerOrder.sort(function(a,b) {
-        return a.layer - b.layer;
+    SortedLayerOrder.sort(function(a, b) {
+      return a.layer - b.layer;
     });
-    for (let i = SortedLayerOrder.length - 1; i >=0 ; i--) {
-      var Obj = SortedLayerOrder[i]
-      Obj.BringToFront()
+    for (let i = SortedLayerOrder.length - 1; i >= 0; i--) {
+      var Obj = SortedLayerOrder[i];
+      Obj.BringToFront();
     }
-    LayerOrder = []
+    LayerOrder = [];
   }
   /*LoopOverObjects("Rectangle")
-  //LoopOverObjects("TextLabel")
-  LoopOverObjects("TextButton")*/
+    //LoopOverObjects("TextLabel")
+    LoopOverObjects("TextButton")*/
 }
 
 function getAllObjects() {
@@ -181,13 +182,13 @@ function logKey(e) {
     var BaseSize = 22.5;
     function updateTextSize() {
       /* //CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*5.3
-      if (CurrentTextBox.text.length <= CurrentTextBox.size.x * BaseSize) {
-        //CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*5.3
-        CurrentTextBox.TextLabel.size = BaseNum;
-      } else {
-        CurrentTextBox.TextLabel.size =
-          (CurrentTextBox.size.x / CurrentTextBox.text.length) * 4.5;
-      }*/
+        if (CurrentTextBox.text.length <= CurrentTextBox.size.x * BaseSize) {
+          //CurrentTextBox.TextLabel.size = CurrentTextBox.size.x/CurrentTextBox.text.length*5.3
+          CurrentTextBox.TextLabel.size = BaseNum;
+        } else {
+          CurrentTextBox.TextLabel.size =
+            (CurrentTextBox.size.x / CurrentTextBox.text.length) * 4.5;
+        }*/
       CurrentTextBox.sizeTextToFitBox();
     }
     var ShiftDown = false;

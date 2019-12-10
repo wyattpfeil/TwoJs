@@ -188,3 +188,5 @@ AsyncColorCode()
 console.log(Rectangle7.tworect.rotation)
 Rectangle7.rotation = 0
 Tween.TweenNumber(Rectangle7, "rotation", 500, 20)
+
+Rectangle7.bevel = 10

@@ -5,12 +5,13 @@ const sleep = (milliseconds) => {
 class Rectangle {
     constructor(Width, Height) {
       var Name = "Rectangle" + makeName(10);
-      this.tworect = two.makeRectangle(
+      /*this.tworect = two.makeRectangle(
         window.innerWidth / 2,
         window.innerHeight / 2,
         window.innerWidth * Width,
         window.innerHeight * Height
-      );
+      );*/
+      this.tworect = two.makeRoundedRectangle(window.innerWidth / 2,window.innerHeight / 2, window.innerWidth * Width, window.innerHeight * Height, 0)
       Objects[Name] = this;
       this.position = Vector2.new(0.5, 0.5);
       this.size = Vector2.new(Width, Height);
@@ -105,6 +106,13 @@ class Rectangle {
     }
     get rotation() {
       return this._rotation
+    }
+    set bevel(NewBevel) {
+      this.tworect.radius = NewBevel
+      this.setPropertyAndUpdate("bevel", NewBevel)
+    }
+    get bevel() {
+      return this._bevel
     }
     BringToFront() {
       document.querySelector("#two_0").appendChild(this.SVGElement);
