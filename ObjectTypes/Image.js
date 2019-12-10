@@ -25,8 +25,8 @@ class Image {
       return this._size;
     }
     set position(NewPosition) {
-      var PositionX = window.innerWidth * NewPosition.x;
-      var PositionY = window.innerHeight * NewPosition.y;
+      var PositionX = window.innerWidth * (NewPosition.x - this.size.x/2);
+      var PositionY = window.innerHeight * (NewPosition.y - this.size.y/2);
       this.Img.setAttributeNS(null, "x", PositionX.toString());
       this.Img.setAttributeNS(null, "y", PositionY.toString());
       this.setPropertyAndUpdate("position", NewPosition);

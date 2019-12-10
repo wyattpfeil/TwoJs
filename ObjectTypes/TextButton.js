@@ -6,7 +6,7 @@ class TextButton {
       this.backtangle = new Rectangle(Width, Height);
       this.textlabel = new TextLabel("Button");
       this.size = Vector2.new(Width, Height);
-      
+      this.raised = true
       this.setRectangleToBacktangle(this.rectangle, this.backtangle);
       var TotalObjectsNumber = Object.keys(Objects).length + 1
       this.layer = TotalObjectsNumber
@@ -17,16 +17,32 @@ class TextButton {
       document.addEventListener("mousedown", this.mousedown.bind(this));
   
       document.addEventListener("mouseup", this.mouseup.bind(this));
+
+      document.addEventListener("mousemove", this.mousemove.bind(this));
     }
-  
+    mousemove(e) {
+    if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
+      this.onMouseHover();
+    }
+  }
     setRectangleToBacktangle(Rectangle, Backtangle) {
-      Rectangle.position = Vector2.new(
-        Backtangle.position.x,
-        Backtangle.position.y - this.size.y / 10
-      );
-      Rectangle.size = Backtangle.size;
-      this.textlabel.position = Rectangle.position;
-      Rectangle.innerColor = Backtangle.innerColor;
+      if(this.raised == true) {
+        Rectangle.position = Vector2.new(
+          Backtangle.position.x,
+          Backtangle.position.y - this.size.y / 10
+        );
+        Rectangle.size = Backtangle.size;
+        this.textlabel.position = Rectangle.position;
+        Rectangle.innerColor = Backtangle.innerColor;
+      } else {
+        Rectangle.position = Vector2.new(
+          Backtangle.position.x,
+          Backtangle.position.y
+        );
+        Rectangle.size = Backtangle.size;
+        this.textlabel.position = Rectangle.position;
+        Rectangle.innerColor = Backtangle.innerColor;
+      }
     }
     click(e) {
       if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
@@ -46,6 +62,11 @@ class TextButton {
       if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
         this.rectangle.position = this.backtangle.position;
         this.textlabel.position = this.rectangle.position;
+      }
+    }
+    mousemove(e) {
+      if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
+        this.onMouseHover();
       }
     }
     isPointInRectangle(X, Y, Rectangle) {
@@ -125,6 +146,13 @@ class TextButton {
     get text() {
       return this._text;
     }
+    set raised(NewRaised) {
+      this.setPropertyAndUpdate("raised", NewRaised)
+      this.setRectangleToBacktangle(this.rectangle, this.backtangle)
+    }
+    get raised() {
+      return this._raised
+    }
     set layer(NewLayer) {
       this.setPropertyAndUpdate("layer", NewLayer);
       ReLayerObjects()
@@ -140,6 +168,54 @@ class TextButton {
     }
     get rotation() {
       return this._rotation
+    }
+    set bevel(NewBevel) {
+      this.backtangle.bevel = NewBevel
+      this.rectangle.bevel = NewBevel
+      this.setPropertyAndUpdate("bevel", NewBevel)
+    }
+    get bevel() {
+      return this._bevel
+    }
+    set outline(NewOutline) {
+      this.rectangle.outline = NewOutline
+      this.setPropertyAndUpdate("outline", NewOutline)
+    }
+    get outline() {
+      return this._outline
+    }
+    set outlineColor(NewOutlineColor) {
+      this.rectangle.outlineColor = NewOutlineColor
+      this.setPropertyAndUpdate("outlineColor", NewOutlineColor)
+    }
+    get outlineColor() {
+      return this._outlineColor
+    }
+    set onMouseHover(codeToRun) {
+      this.setPropertyAndUpdate("onMouseHover", codeToRun);
+    }
+    get onMouseHover() {
+      return this._onMouseHover
+    }
+    clone() {
+      var ClonedButton = new TextButton(this.size.x, this.size.y)
+      ClonedButton.position = this.position
+      ClonedButton.size = this.size
+      ClonedButton.innerColor = this.innerColor
+      ClonedButton.raised = this.raised
+      ClonedButton.textSize = this.textSize
+      ClonedButton.textColor = this.textColor
+      ClonedButton.bevel = this.bevel
+      //ClonedButton.text = this._text
+     /* ClonedButton.size = this.size
+      ClonedButton.innerColor = this.innerColor
+      ClonedButton.rotation = this.rotation
+      ClonedButton.raised = this.raised
+      ClonedButton.textSize = this.textSize
+      ClonedButton.textColor = this.textColor
+      ClonedButton.text = this.text
+      ClonedButton.bevel = this.bevel*/
+      return ClonedButton
     }
     BringToFront() {
       if(this.backtangle != null) {
@@ -186,6 +262,8 @@ class TextButton {
           break;
         }
       }
+      this.textSize = this.textlabel.size - this.textlabel.size/10
+      this.textlabel.position = this.rectangle.position;
     }
     setPropertyAndUpdate(PropName, PropValue) {
       this["_" + PropName] = PropValue;
