@@ -83,6 +83,20 @@ class TextLabel {
     get rotation() {
       return this._rotation
     }
+    set visible(NewVisibility) {
+      if(NewVisibility == true) {
+        this.TextLabel.setAttribute("visibility", "visible")
+      } else {
+        this.TextLabel.setAttribute("visibility", "hidden")
+      }
+      this.setPropertyAndUpdate("visible", NewVisibility)
+    }
+    get visible() {
+      return this._visible
+    }
+    destroy() {
+      this.visible = false
+    }
     BringToFront() {
       document.querySelector("#two_0").appendChild(this.TextLabel);
     }

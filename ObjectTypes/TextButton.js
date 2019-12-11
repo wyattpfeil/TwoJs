@@ -17,13 +17,6 @@ class TextButton {
       document.addEventListener("mousedown", this.mousedown.bind(this));
   
       document.addEventListener("mouseup", this.mouseup.bind(this));
-
-      document.addEventListener("mousemove", this.mousemove.bind(this));
-    }
-    mousemove(e) {
-    if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
-      this.onMouseHover();
-    }
   }
     setRectangleToBacktangle(Rectangle, Backtangle) {
       if(this.raised == true) {
@@ -46,7 +39,9 @@ class TextButton {
     }
     click(e) {
       if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
-        this.onButtonClicked();
+        if(this.visible == true) {
+          this.onButtonClicked();
+        }
       }
     }
     mouseup(e) {
@@ -196,6 +191,18 @@ class TextButton {
     }
     get onMouseHover() {
       return this._onMouseHover
+    }
+    set visible(NewVisibility) {
+      this.rectangle.visible = NewVisibility
+      this.backtangle.visible = NewVisibility
+      this.textlabel.visible = NewVisibility
+      this.setPropertyAndUpdate("visible", NewVisibility);
+    }
+    get visible() {
+      return this._visible
+    }
+    destroy() {
+      this.visible = false
     }
     clone() {
       var ClonedButton = new TextButton(this.size.x, this.size.y)

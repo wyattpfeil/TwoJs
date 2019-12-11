@@ -114,6 +114,9 @@ class Rectangle {
     get bevel() {
       return this._bevel
     }
+    destroy() {
+      this.visible = false
+    }
     BringToFront() {
       document.querySelector("#two_0").appendChild(this.SVGElement);
     }
