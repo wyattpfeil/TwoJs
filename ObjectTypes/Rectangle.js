@@ -4,7 +4,7 @@ const sleep = (milliseconds) => {
 
 class Rectangle {
     constructor(Width, Height) {
-      var Name = "Rectangle" + makeName(10);
+      this.name = "Rectangle" + makeName(10);
       /*this.tworect = two.makeRectangle(
         window.innerWidth / 2,
         window.innerHeight / 2,
@@ -12,7 +12,7 @@ class Rectangle {
         window.innerHeight * Height
       );*/
       this.tworect = two.makeRoundedRectangle(window.innerWidth / 2,window.innerHeight / 2, window.innerWidth * Width, window.innerHeight * Height, 0)
-      Objects[Name] = this;
+      Objects[this.name] = this;
       this.position = Vector2.new(0.5, 0.5);
       this.size = Vector2.new(Width, Height);
       this.innerColor = Color3.fromRGB(255, 0, 0);
