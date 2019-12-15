@@ -10,6 +10,7 @@ class Image {
     this.Img.setAttributeNS(null, "width", "200");
     this.Img.setAttributeNS(null, "height", "200");
     this.Img.setAttribute("preserveAspectRatio", "none");
+    this.visible = true
     twoCanvas.appendChild(this.Img);
     var TotalObjectsNumber = Object.keys(Objects).length + 1;
     this.layer = TotalObjectsNumber;

@@ -7,6 +7,7 @@ class TextButton {
       this.textlabel = new TextLabel("Button");
       this.size = Vector2.new(Width, Height);
       this.raised = true
+      this.visible = true
       this.setRectangleToBacktangle(this.rectangle, this.backtangle);
       var TotalObjectsNumber = Object.keys(Objects).length + 1
       this.layer = TotalObjectsNumber

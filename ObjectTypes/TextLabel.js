@@ -11,6 +11,7 @@ class TextLabel {
       this.size = 0.1;
       this.position = Vector2.new(0.5, 0.5);
       this.fontFamily = "sans-serif";
+      this.visible = true
     }
     set text(NewText) {
       this.TextLabel.textContent = NewText;

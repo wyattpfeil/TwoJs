@@ -4,6 +4,7 @@ class Button {
     Objects[Name] = this;
     this.rectangle = new Rectangle(Width, Height);
     this.onButtonClicked = function() {};
+    this._isMouseDown = false
     document.addEventListener("click", this.click.bind(this));
 
     document.addEventListener("mousedown", this.mousedown.bind(this));
@@ -11,11 +12,24 @@ class Button {
     document.addEventListener("mouseup", this.mouseup.bind(this));
 
     document.addEventListener("mousemove", this.mousemove.bind(this));
+    this.onMouseUnhover = function() {
 
+    }
+    this.onMouseHover = function() {
+
+    }
+    this.onMouseDown = function() {
+
+    }
+    this.onMouseUp = function() {
+      
+    }
   }
   mousemove(e) {
     if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
       this.onMouseHover();
+    } else {
+      this.onMouseUnhover()
     }
   }
   click(e) {
@@ -27,10 +41,16 @@ class Button {
 
   mouseup(e) {
     //Mouse Up
+    if(this._isMouseDown == true) {
+      this.onMouseUp()
+      this._isMouseDown = false
+    }
   }
   mousedown(e) {
     if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
       //Mouse Down
+      this.onMouseDown()
+      this._isMouseDown = true
     }
   }
   isPointInRectangle(X, Y, Rectangle) {
@@ -77,11 +97,29 @@ class Button {
   get onButtonClicked() {
     return this._onButtonClicked;
   }
+  set onMouseDown(codeToRun) {
+    this.setPropertyAndUpdate("onMouseDown", codeToRun);
+  }
+  get onMouseDown() {
+    return this._onMouseDown;
+  }
+  set onMouseUp(codeToRun) {
+    this.setPropertyAndUpdate("onMouseUp", codeToRun);
+  }
+  get onMouseUp() {
+    return this._onMouseUp;
+  }
   set onMouseHover(codeToRun) {
     this.setPropertyAndUpdate("onMouseHover", codeToRun);
   }
   get onMouseHover() {
     return this._onMouseHover
+  }
+  set onMouseUnhover(codeToRun) {
+    this.setPropertyAndUpdate("onMouseUnhover", codeToRun);
+  }
+  get onMouseUnhover() {
+    return this._onMouseUnhover
   }
   set innerColor(NewColor) {
     this.rectangle.innerColor = NewColor;
@@ -96,6 +134,23 @@ class Button {
   }
   get rotation() {
     return this._rotation
+  }
+  set outline(NewOutline) {
+    this.rectangle.outline = NewOutline
+    this.setPropertyAndUpdate("outline", NewOutline)
+  }
+  get outline() {
+    return this._outline
+  }
+  set outlineColor(NewOutlineColor) {
+    this.rectangle.outlineColor = NewOutlineColor
+    this.setPropertyAndUpdate("outlineColor", NewOutlineColor)
+  }
+  get outlineColor() {
+    return this._outlineColor
+  }
+  get isMouseDown() {
+    return this._isMouseDown
   }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;
