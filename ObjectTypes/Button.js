@@ -5,6 +5,7 @@ class Button {
     this.rectangle = new Rectangle(Width, Height);
     this.onButtonClicked = function() {};
     this._isMouseDown = false
+    this.visible = true
     document.addEventListener("click", this.click.bind(this));
 
     document.addEventListener("mousedown", this.mousedown.bind(this));
@@ -22,35 +23,43 @@ class Button {
 
     }
     this.onMouseUp = function() {
-      
+
     }
   }
   mousemove(e) {
-    if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
-      this.onMouseHover();
-    } else {
-      this.onMouseUnhover()
+    if(this.visible == true){
+      if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
+        this.onMouseHover();
+      } else {
+        this.onMouseUnhover()
+      }
     }
   }
   click(e) {
-    if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
-      //Mouse Clicked
-      this.onButtonClicked();
+    if(this.visible == true){
+      if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
+        //Mouse Clicked
+        this.onButtonClicked();
+      }
     }
   }
 
   mouseup(e) {
     //Mouse Up
-    if(this._isMouseDown == true) {
-      this.onMouseUp()
-      this._isMouseDown = false
+    if(this.visible == true){
+      if(this._isMouseDown == true) {
+        this.onMouseUp()
+        this._isMouseDown = false
+      }
     }
   }
   mousedown(e) {
-    if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
-      //Mouse Down
-      this.onMouseDown()
-      this._isMouseDown = true
+    if(this.visible == true) {
+      if (this.isPointInRectangle(e.clientX, e.clientY, this.rectangle)) {
+        //Mouse Down
+        this.onMouseDown()
+        this._isMouseDown = true
+      }
     }
   }
   isPointInRectangle(X, Y, Rectangle) {
@@ -151,6 +160,13 @@ class Button {
   }
   get isMouseDown() {
     return this._isMouseDown
+  }
+  set visible(NewVisibility) {
+    this.rectangle.visible = NewVisibility
+    this.setPropertyAndUpdate("visible", NewVisibility)
+  }
+  get visible() {
+    return this._visible
   }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;

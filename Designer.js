@@ -27,87 +27,137 @@ CreateRectangleButton.onButtonClicked = function() {
   AllObjects.push(CreatedRect);
 };
 
-function createDraggingTool(Obj) {
-  Mouse.MouseMove.connect(function(e){
-    UpdateDraggerPositions()
-  })
-  var ObjPosition = Obj.position;
-  var ObjSize = Obj.size;
+function createDraggingTool(Obj, On) {
   var Draggers = [];
-  function UpdateDraggerPositions() {
-    Draggers.forEach(function(draggerData){
-      draggerData[3]()
-    });    
-  }
-  function CreateDragger(Dragger, Position, MouseMoveCode, UpdateFunction) {
-    Draggers.push([Dragger, Position, MouseMoveCode, UpdateFunction]);
-    Dragger.innerColor = Color3.fromRGB(255, 255, 255);
-    Dragger.size = Vector2.new(0.005, 0.01);
-    //LeftDragger.outline = 1
-    Dragger.onMouseHover = function() {
-      Dragger.innerColor = Color3.fromRGB(140, 140, 140);
-    };
-    Dragger.onMouseUnhover = function() {
-      Dragger.innerColor = Color3.fromRGB(255, 255, 255);
-    };
+  if (On == true) {
     Mouse.MouseMove.connect(function(e) {
-      if (Dragger.isMouseDown == true) {
-        MouseMoveCode(e);
-      }
+      UpdateDraggerPositions();
     });
-   // Dragger.position = Position;
-  }
-  var LeftDragger = new Button(0.01, 0.01);
-  CreateDragger(
-    LeftDragger,
-    Vector2.new(Obj.position.x - Obj.size.x / 2 - 0.0075, Obj.position.y),
-    function(e) {
-      var MouseXPos = e.x / window.innerWidth;
-      if (MouseXPos < Obj.position.x + Obj.size.x / 2 - 0.0075) {
-        var DifferenceX = ObjPosition.x - MouseXPos;
-        Obj.size = Vector2.new(DifferenceX, Obj.size.y);
-        Obj.position = Vector2.new(
-          ObjPosition.x - DifferenceX / 2 + 0.0075,
-          ObjPosition.y
-        );
+    var ObjPosition = Obj.position;
+    var ObjSize = Obj.size;
+    
+    function UpdateDraggerPositions() {
+      Draggers.forEach(function(draggerData) {
+        draggerData[3]();
+      });
+    }
+    function CreateDragger(Dragger, Position, MouseMoveCode, UpdateFunction) {
+      Draggers.push([Dragger, Position, MouseMoveCode, UpdateFunction]);
+      Dragger.innerColor = Color3.fromRGB(255, 255, 255);
+      Dragger.size = Vector2.new(0.005, 0.01);
+      //LeftDragger.outline = 1
+      Dragger.onMouseHover = function() {
+        Dragger.innerColor = Color3.fromRGB(140, 140, 140);
+      };
+      Dragger.onMouseUnhover = function() {
+        Dragger.innerColor = Color3.fromRGB(255, 255, 255);
+      };
+      Mouse.MouseMove.connect(function(e) {
+        if (Dragger.isMouseDown == true) {
+          MouseMoveCode(e);
+        }
+      });
+      // Dragger.position = Position;
+    }
+    var LeftDragger = new Button(0.01, 0.01);
+    CreateDragger(
+      LeftDragger,
+      Vector2.new(Obj.position.x - Obj.size.x / 2 - 0.0075, Obj.position.y),
+      function(e) {
+        var MouseXPos = e.x / window.innerWidth;
+        if (MouseXPos < Obj.position.x + Obj.size.x / 2 - 0.0075) {
+          var DifferenceX = ObjPosition.x - MouseXPos;
+          Obj.size = Vector2.new(DifferenceX, Obj.size.y);
+          Obj.position = Vector2.new(
+            ObjPosition.x - DifferenceX / 2 + 0.0075,
+            Obj.position.y
+          );
+          LeftDragger.position = Vector2.new(
+            Obj.position.x - Obj.size.x / 2 - 0.0075,
+            Obj.position.y
+          );
+        } else {
+        }
+      },
+      function() {
         LeftDragger.position = Vector2.new(
           Obj.position.x - Obj.size.x / 2 - 0.0075,
           Obj.position.y
         );
-      } else {
       }
-    }, function(){
-      LeftDragger.position = Vector2.new(Obj.position.x - Obj.size.x / 2 - 0.0075, Obj.position.y)
-    }
-  );
-}
-
-/*var TopDragger = new Button(0.01, 0.01);
-CreateDragger(TopDragger, Vector2.new(Obj.position.x, Obj.position.y - Obj.size.y / 2 - 0.0075),
-  function(e) {
-      var MouseYPos = e.y / window.innerHeight;
-      if (MouseYPos < Obj.position.y + Obj.size.y / 2 - 0.0075) {
-        var DifferenceY = ObjPosition.y - MouseYPos;
-        Obj.size = Vector2.new(Obj.size.x, DifferenceY);
-        Obj.position = Vector2.new(
-          Obj.position.x,
-          ObjPosition.y - DifferenceY / 2 + 0.0075
+    );
+    /*var RightDragger = new Button(0.01, 0.01);
+    CreateDragger(
+      RightDragger,
+      Vector2.new(Obj.position.x + Obj.size.x / 2 + 0.0075, Obj.position.y),
+      function(e) {
+        var MouseXPos = e.x / window.innerWidth;
+        if (MouseXPos > Obj.position.x - Obj.size.x / 2 - 0.0075) {
+          var DifferenceX = MouseXPos - ObjPosition.x;
+          Obj.size = Vector2.new(DifferenceX, Obj.size.y);
+          Obj.position = Vector2.new(
+            ObjPosition.x + DifferenceX / 2 + 0.0075,
+            Obj.position.y
+          );
+          RightDragger.position = Vector2.new(
+            Obj.position.x + Obj.size.x / 2 + 0.0075,
+            Obj.position.y
+          );
+        } else {
+        }
+      },
+      function() {
+        RightDragger.position = Vector2.new(
+          Obj.position.x + Obj.size.x / 2 + 0.0075,
+          Obj.position.y
         );
+      }
+    );*/
+    var TopDragger = new Button(0.01, 0.01);
+    CreateDragger(
+      TopDragger,
+      Vector2.new(Obj.position.x, Obj.position.y - Obj.size.y / 2 - 0.0075),
+      function(e) {
+        var MouseYPos = e.y / window.innerHeight;
+        if (MouseYPos < Obj.position.y + Obj.size.y / 2 - 0.0075) {
+          var DifferenceY = ObjPosition.y - MouseYPos;
+          Obj.size = Vector2.new(Obj.size.x, DifferenceY);
+          Obj.position = Vector2.new(
+            Obj.position.x,
+            ObjPosition.y - DifferenceY / 2 + 0.0075
+          );
+          TopDragger.position = Vector2.new(
+            Obj.position.x,
+            Obj.position.y - Obj.size.y / 2 - 0.0075
+          );
+        } else {
+        }
+      },
+      function() {
         TopDragger.position = Vector2.new(
           Obj.position.x,
           Obj.position.y - Obj.size.y / 2 - 0.0075
         );
-      } else {
       }
-    },
-  function(){
-    TopDragger.position = Vector2.new(Obj.position.x, Obj.position.y - Obj.size.y / 2 - 0.0075)
+    );
+  } else {
+    Draggers.forEach(function(draggerData) {
+      draggerData[0].destroy();
+    });
   }
-)*/
+  return Draggers
+}
 
 var TestRect = new Rectangle(0.1, 0.1);
-createDraggingTool(TestRect);
+var Draggers = createDraggingTool(TestRect, true);
 
+var TestButton = new TextButton(0.1, 0.1)
+TestButton.position = Vector2.new(0.1, 0.1)
+TestButton.onButtonClicked = function() {
+  Draggers.forEach(function(draggerData) {
+    draggerData[0].visible = false
+  });
+}
 Mouse.MouseDown.connect(function(e) {
   function isPointInRectangle(X, Y, Rectangle) {
     var CenterOfButtonX = Rectangle.position.x * window.innerWidth;
