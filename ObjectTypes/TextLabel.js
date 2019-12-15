@@ -97,7 +97,10 @@ class TextLabel {
     }
     destroy() {
       this.visible = false
-      this.TextLabel.parentNode.removeChild(this.TextLabel);
+      if(this.TextLabel.parentNode) {
+        this.TextLabel.parentNode.removeChild(this.TextLabel);
+      }
+      
     }
     BringToFront() {
       document.querySelector("#two_0").appendChild(this.TextLabel);

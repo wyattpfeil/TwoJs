@@ -202,6 +202,21 @@ class TextButton {
     get visible() {
       return this._visible
     }
+    set onlyTextVisible(NewOnlyTextVisible) {
+      if(NewOnlyTextVisible == true) {
+        this.textlabel.visible = true
+        this.rectangle.visible = false
+        this.backtangle.visible = false
+      } else {
+        this.textlabel.visible = true
+        this.rectangle.visible = true
+        this.backtangle.visible = true
+      }
+      this.setPropertyAndUpdate("onlyTextVisible", NewOnlyTextVisible);
+    }
+    get onlyTextVisible() {
+      return this._onlyTextVisible
+    }
     destroy() {
       this.visible = false
       this.rectangle.destroy()

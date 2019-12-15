@@ -55,19 +55,19 @@ function generateExportCode() {
       var rotation = Obj.rotation;
       var bevel = Obj.bevel;
       var Code = "";
-      Code = "var " + name + " = new Rectangle(" + size.x + ", " + size.y + ")";
+      Code = "var " + name + " = new Rectangle(" + (size.x).toFixed(4) + ", " + (size.y).toFixed(4) + ")";
       Code = MakeNewLine(Code);
       Code = SetPropertyInCode(
         Code,
         name,
         "position",
-        "Vector2.new(" + position.x + ", " + position.y + ")"
+        "Vector2.new(" + (position.x).toFixed(4) + ", " + (position.y).toFixed(4) + ")"
       );
       Code = SetPropertyInCode(
         Code,
         name,
         "size",
-        "Vector2.new(" + size.x + ", " + size.y + ")"
+        "Vector2.new(" + (size.x).toFixed(4) + ", " + (size.y).toFixed(4) + ")"
       );
       Code = SetPropertyInCode(Code, name, "outline", outline);
       Code = SetPropertyInCode(
@@ -115,6 +115,7 @@ ToolboxBack.innerColor = Color3.fromRGB(66, 66, 66);
 
 var SelectToolEnabled = false;
 var ExportButton = new TextButton(0.2, 0.2);
+ExportButton.text = "Export"
 ExportButton.innerColor = Color3.fromRGB(115, 115, 115);
 ExportButton.size = Vector2.new(0.1, 0.05);
 ExportButton.position = Vector2.new(0.925, 0.05);
@@ -328,7 +329,6 @@ function createDraggingTool(Obj) {
   return Draggers;
 }
 
-var Intersecting = [];
 Mouse.MouseDown.connect(function(e) {
   if (!e.shiftKey) {
     AllObjects.forEach(Obj => {
@@ -340,7 +340,10 @@ Mouse.MouseDown.connect(function(e) {
             draggerData[0].destroy();
           });
           var Draggers = createDraggingTool(Obj);
+          SelectedObject = Obj
           GlobalDraggers = Draggers;
+          removeProperties()
+          createProperties()
           SelectToolEnabled = false;
         }
       }
@@ -349,5 +352,68 @@ Mouse.MouseDown.connect(function(e) {
     GlobalDraggers.forEach(function(draggerData) {
       draggerData[0].destroy();
     });
+    removeProperties()
+    SelectedObject = null
   }
 });
+
+var PropertiesBox = new Rectangle(0.15731435643564357, 0.4079373678646935)
+PropertiesBox.position = Vector2.new(0.09067222511724857, 0.2040169133192389)
+PropertiesBox.size = Vector2.new(0.15731435643564357, 0.4079373678646935)
+PropertiesBox.innerColor = Color3.fromRGB(66, 66, 66)
+
+var PropertiesTop = new Rectangle(0.15766414799374673, 0.022415433403805498)
+PropertiesTop.position = Vector2.new(0.09084353830119854, 0.010890591966173362)
+PropertiesTop.size = Vector2.new(0.15766414799374673, 0.022415433403805498)
+PropertiesTop.innerColor = Color3.fromRGB(45, 45, 45)
+
+var PropertyNum = 1
+var PropertyBoxes = []
+function createProperties() {
+  createNewProperty("innerColor", function(NewValue){
+    var Colors = NewValue.split(',');
+    SelectedObject.innerColor = Color3.fromRGB(parseInt(Colors[0]), parseInt(Colors[1]), parseInt(Colors[2]))
+  }, SelectedObject.innerColor.red + ", " + SelectedObject.innerColor.green + ", " + SelectedObject.innerColor.blue)
+  
+  createNewProperty("rotation", function(NewValue){
+    console.log(NewValue)
+    SelectedObject.rotation = NewValue
+  }, 0)
+  createNewProperty("position", function(NewValue){
+    console.log(NewValue)
+    var XAndYPositions = NewValue.split(',');
+    SelectedObject.position = Vector2.new(XAndYPositions[0], XAndYPositions[1])
+  }, (SelectedObject.position.x).toFixed(4) + ", " + (SelectedObject.position.y).toFixed(4))
+}
+function createNewProperty(PropertyName, onTextSubmitCode, BaseValue) {
+  var SamplePropertyInput = new TextBox(PropertyName)
+  SamplePropertyInput.position = Vector2.new(0.1193, 0.05708245243128964 * PropertyNum)
+  SamplePropertyInput.size = Vector2.new(0.09, 0.03)
+  SamplePropertyInput.textColor = Color3.fromRGB(255, 255, 255)
+  SamplePropertyInput.innerColor = Color3.fromRGB(100, 100, 100)
+  SamplePropertyInput.outline = 0
+  SamplePropertyInput.text = BaseValue
+  
+  var SamplePropertyLabel = new TextButton(0.05, 0.03)
+  SamplePropertyLabel.position = Vector2.new(0.0425, 0.05708245243128964 * PropertyNum)
+  SamplePropertyLabel.textColor = Color3.fromRGB(255, 255, 255)
+  SamplePropertyLabel.raised = false
+  SamplePropertyLabel.onlyTextVisible = true
+  SamplePropertyLabel.text = PropertyName
+  PropertyBoxes.push(SamplePropertyInput)
+  PropertyBoxes.push(SamplePropertyLabel)
+  PropertyNum = PropertyNum + 1
+  SamplePropertyInput.onTextSubmit = function() {
+    var TextWithoutCursor = SamplePropertyInput.text.slice(0, -1);
+    onTextSubmitCode(TextWithoutCursor)
+  }
+}
+function removeProperties() {
+  PropertyBoxes.forEach(PropertyBox => {
+    PropertyBox.destroy()
+  })
+  PropertyNum = 1
+}
+
+
+//SamplePropertyLabel.size = 0.015
