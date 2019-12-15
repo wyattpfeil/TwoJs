@@ -59,7 +59,8 @@ CreateRectangleButton.onButtonClicked = function() {
 function createDraggingTool(Obj) {
   var Draggers = [];
   var MouseInRect = false;
-  var ResetPos;
+  var ResetPosTopRight;
+  var ResetPosBottomRight;
   var Offset = 0.0075
   Mouse.MouseMove.connect(function(e) {
     if (MouseInRect == true) {
@@ -73,7 +74,8 @@ function createDraggingTool(Obj) {
       //Obj.position = Vector2.new(XMousePos + (XMousePos - Obj.position.x ), Obj.position.y)
     }
     if (NoDragersBeingClicked == true) {
-      ResetPos = Vector2.new(Obj.position.x + Obj.size.x/2 - Offset, Obj.position.y + Obj.size.y/2 - Offset);
+      ResetPosTopRight = Vector2.new(Obj.position.x + Obj.size.x/2 - Offset, Obj.position.y + Obj.size.y/2 - Offset);
+      ResetPosBottomRight = Vector2.new(Obj.position.x - Obj.size.x/2 - Offset, Obj.position.y - Obj.size.y/2 + Offset);
     }
     UpdateDraggerPositions();
   });
@@ -119,7 +121,7 @@ function createDraggingTool(Obj) {
     Mouse.MouseMove.connect(function(e) {
       if (Dragger.isMouseDown == true) {
         UpdateDraggerPositions();
-        MouseMoveCode(e, ResetPos);
+        MouseMoveCode(e, ResetPosTopRight, ResetPosBottomRight);
       }
     });
     // Dragger.position = Position;
@@ -129,7 +131,7 @@ function createDraggingTool(Obj) {
   CreateDragger(
     LeftDragger,
     Vector2.new(Obj.position.x - Obj.size.x / 2 - Offset, Obj.position.y),
-    function(e, ObjPos) {
+    function(e, ObjPos, NonObjPos) {
       
       var MouseXPos = e.x / window.innerWidth;
       
@@ -156,17 +158,17 @@ function createDraggingTool(Obj) {
     }
   );
 
-  /*var RightDragger = new Button(0.01, 0.01);
+  var RightDragger = new Button(0.01, 0.01);
     CreateDragger(
       RightDragger,
-      Vector2.new(Obj.position.x + Obj.size.x / 2 + 0.0075, Obj.position.y),
-      function(e) {
+      Vector2.new(Obj.position.x + Obj.size.x / 2 + Offset, Obj.position.y),
+      function(e, NonObjPos, ObjPos) {
         var MouseXPos = e.x / window.innerWidth;
-        if (MouseXPos > Obj.position.x - Obj.size.x / 2 - 0.0075) {
-          var DifferenceX = MouseXPos - ObjPosition.x;
+        if (MouseXPos > Obj.position.x - Obj.size.x / 2 + Offset) {
+          var DifferenceX = MouseXPos - ObjPos.x - Offset * 2;
           Obj.size = Vector2.new(DifferenceX, Obj.size.y);
           Obj.position = Vector2.new(
-            ObjPosition.x + DifferenceX / 2 + 0.0075,
+            ObjPos.x + DifferenceX / 2 + Offset,
             Obj.position.y
           );
           RightDragger.position = Vector2.new(
@@ -182,12 +184,14 @@ function createDraggingTool(Obj) {
           Obj.position.y
         );
       }
-    );*/
+    );
+
+
   var TopDragger = new Button(0.01, 0.01);
   CreateDragger(
     TopDragger,
     Vector2.new(Obj.position.x, Obj.position.y - Obj.size.y / 2 - Offset),
-    function(e, ObjPos) {
+    function(e, ObjPos, NonObjPos) {
       var MouseYPos = e.y / window.innerHeight;
       if (MouseYPos < Obj.position.y + Obj.size.y / 2 - Offset) {
         var DifferenceY = ObjPos.y - MouseYPos;
@@ -207,6 +211,33 @@ function createDraggingTool(Obj) {
       TopDragger.position = Vector2.new(
         Obj.position.x,
         Obj.position.y - Obj.size.y / 2 - Offset
+      );
+    }
+  );
+
+  var BottomDragger = new Button(0.01, 0.01);
+  CreateDragger(
+    BottomDragger,
+    Vector2.new(Obj.position.x, Obj.position.y + Obj.size.y / 2 + Offset),
+    function(e, NonObjPos, ObjPos) {
+      var MouseYPos = e.y / window.innerHeight;
+      if (MouseYPos > Obj.position.y - Obj.size.y / 2 + Offset) {
+        var DifferenceY = MouseYPos - ObjPos.y;
+        Obj.size = Vector2.new(Obj.size.x, DifferenceY);
+        Obj.position = Vector2.new(
+          Obj.position.x,
+          ObjPos.y + DifferenceY / 2 - Offset
+        );
+        BottomDragger.position = Vector2.new(
+          Obj.position.x,
+          Obj.position.y + Obj.size.y / 2 + Offset
+        );
+      } else {
+      }
+    },
+    function() {
+      BottomDragger.position = Vector2.new(
+        Obj.position.x, Obj.position.y + Obj.size.y / 2 + Offset
       );
     }
   );
