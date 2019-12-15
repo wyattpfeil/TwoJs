@@ -168,6 +168,10 @@ class Button {
   get visible() {
     return this._visible
   }
+  destroy() {
+    this.visible = false
+    this.rectangle.destroy()
+  }
   setPropertyAndUpdate(PropName, PropValue) {
     this["_" + PropName] = PropValue;
     two.update();

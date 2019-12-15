@@ -63,13 +63,17 @@ function createDraggingTool(Obj) {
   var Offset = 0.0075
   Mouse.MouseMove.connect(function(e) {
     if (MouseInRect == true) {
+      var XMousePos = (e.x / window.innerWidth)
+     // console.log(XMousePos)
+      //console.log((XMousePos + Obj.position.x - XMousePos))
       Obj.position = Vector2.new(
-        e.x / window.innerWidth,
-        e.y / window.innerHeight
+        (XMousePos),
+        (e.y / window.innerHeight)
       );
+      //Obj.position = Vector2.new(XMousePos + (XMousePos - Obj.position.x ), Obj.position.y)
     }
     if (NoDragersBeingClicked == true) {
-      ResetPos = Vector2.new(Obj.position.x + Obj.size.x/2 - Offset, Obj.position.y);
+      ResetPos = Vector2.new(Obj.position.x + Obj.size.x/2 - Offset, Obj.position.y + Obj.size.y/2 - Offset);
     }
     UpdateDraggerPositions();
   });
@@ -131,7 +135,7 @@ function createDraggingTool(Obj) {
       
       if (MouseXPos < Obj.position.x + Obj.size.x / 2 - Offset) {
           var DifferenceX = ObjPos.x - MouseXPos;
-          console.log("DifferenceX = " + DifferenceX + ", ObjPos.x = " + ObjPos.x + ", MouseXPos = " + MouseXPos + ", Obj.Size.x = " + Obj.size.x)
+          //console.log("DifferenceX = " + DifferenceX + ", ObjPos.x = " + ObjPos.x + ", MouseXPos = " + MouseXPos + ", Obj.Size.x = " + Obj.size.x)
           
           Obj.size = Vector2.new(DifferenceX, Obj.size.y);
           Obj.position = Vector2.new(
@@ -151,6 +155,7 @@ function createDraggingTool(Obj) {
       );
     }
   );
+
   /*var RightDragger = new Button(0.01, 0.01);
     CreateDragger(
       RightDragger,
@@ -215,9 +220,9 @@ Mouse.MouseDown.connect(function(e) {
       var ObjectPosition = Obj.position;
       var ObjectSize = Obj.size;
       if (isPointInRectangle(e.clientX, e.clientY, Obj)) {
-        console.log("Clicked in rect!");
+        //console.log("Clicked in rect!");
         GlobalDraggers.forEach(function(draggerData) {
-          draggerData[0].visible = false;
+          draggerData[0].destroy();
         });
         var Draggers = createDraggingTool(Obj);
         GlobalDraggers = Draggers;

@@ -204,6 +204,9 @@ class TextButton {
     }
     destroy() {
       this.visible = false
+      this.rectangle.destroy()
+      this.backtangle.destroy()
+      this.textlabel.destroy()
     }
     clone() {
       var ClonedButton = new TextButton(this.size.x, this.size.y)
