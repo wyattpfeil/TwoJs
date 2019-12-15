@@ -1,6 +1,6 @@
 var AllObjects = [];
-var SelectedObject
-var GlobalDraggers = []
+var SelectedObject;
+var GlobalDraggers = [];
 function isPointInRectangle(X, Y, Rectangle) {
   var CenterOfButtonX = Rectangle.position.x * window.innerWidth;
   var CenterOfButtonY = Rectangle.position.y * window.innerHeight;
@@ -58,45 +58,49 @@ CreateRectangleButton.onButtonClicked = function() {
 
 function createDraggingTool(Obj) {
   var Draggers = [];
-  var MouseInRect = false
-  var ResetPos
+  var MouseInRect = false;
+  var ResetPos;
+  var Offset = 0.0075
   Mouse.MouseMove.connect(function(e) {
-    if(MouseInRect == true) {
-      Obj.position = Vector2.new(e.x / window.innerWidth, e.y / window.innerHeight)
+    if (MouseInRect == true) {
+      Obj.position = Vector2.new(
+        e.x / window.innerWidth,
+        e.y / window.innerHeight
+      );
     }
-    if(NoDragersBeingClicked == true) {
-      ResetPos = Obj.position
+    if (NoDragersBeingClicked == true) {
+      ResetPos = Vector2.new(Obj.position.x + Obj.size.x/2 - Offset, Obj.position.y);
     }
     UpdateDraggerPositions();
   });
-  
-  Mouse.MouseDown.connect(function(e){
-    if(isPointInRectangle(e.x, e.y, Obj)) {
-      MouseInRect = true
+
+  Mouse.MouseDown.connect(function(e) {
+    if (isPointInRectangle(e.x, e.y, Obj)) {
+      MouseInRect = true;
     }
-  })
-  Mouse.MouseUp.connect(function(e){
-    if(MouseInRect == true) {
-      MouseInRect = false
+  });
+  Mouse.MouseUp.connect(function(e) {
+    if (MouseInRect == true) {
+      MouseInRect = false;
     }
-  })
-  var NoDragersBeingClicked
-  DraggersNotBeingClicked = []
+  });
+  var NoDragersBeingClicked;
+  DraggersNotBeingClicked = [];
   function UpdateDraggerPositions() {
     Draggers.forEach(function(draggerData) {
       draggerData[3]();
-      if(draggerData[0].isMouseDown == false) {
-        DraggersNotBeingClicked.push(draggerData)
+      if (draggerData[0].isMouseDown == false) {
+        DraggersNotBeingClicked.push(draggerData);
       }
     });
-    if(DraggersNotBeingClicked.length == Draggers.length) {
-      NoDragersBeingClicked = true
+    if (DraggersNotBeingClicked.length == Draggers.length) {
+      NoDragersBeingClicked = true;
     } else {
-      NoDragersBeingClicked = false
+      NoDragersBeingClicked = false;
     }
-    DraggersNotBeingClicked = []
+    DraggersNotBeingClicked = [];
   }
-  
+
   function CreateDragger(Dragger, Position, MouseMoveCode, UpdateFunction) {
     Draggers.push([Dragger, Position, MouseMoveCode, UpdateFunction]);
     Dragger.innerColor = Color3.fromRGB(255, 255, 255);
@@ -110,35 +114,39 @@ function createDraggingTool(Obj) {
     };
     Mouse.MouseMove.connect(function(e) {
       if (Dragger.isMouseDown == true) {
-        UpdateDraggerPositions()
+        UpdateDraggerPositions();
         MouseMoveCode(e, ResetPos);
       }
     });
     // Dragger.position = Position;
   }
   var LeftDragger = new Button(0.01, 0.01);
+ 
   CreateDragger(
     LeftDragger,
-    Vector2.new(Obj.position.x - Obj.size.x / 2 - 0.0075, Obj.position.y),
+    Vector2.new(Obj.position.x - Obj.size.x / 2 - Offset, Obj.position.y),
     function(e, ObjPos) {
+      
       var MouseXPos = e.x / window.innerWidth;
-      if (MouseXPos < Obj.position.x + Obj.size.x / 2 - 0.0075) {
-        var DifferenceX = ObjPos.x - MouseXPos;
-        Obj.size = Vector2.new(DifferenceX, Obj.size.y);
-        Obj.position = Vector2.new(
-          ObjPos.x - DifferenceX / 2 + 0.0075,
-          Obj.position.y
-        );
-        LeftDragger.position = Vector2.new(
-          Obj.position.x - Obj.size.x / 2 - 0.0075,
-          Obj.position.y
-        );
-      } else {
-      }
+      
+      if (MouseXPos < Obj.position.x + Obj.size.x / 2 - Offset) {
+          var DifferenceX = ObjPos.x - MouseXPos;
+          console.log("DifferenceX = " + DifferenceX + ", ObjPos.x = " + ObjPos.x + ", MouseXPos = " + MouseXPos + ", Obj.Size.x = " + Obj.size.x)
+          
+          Obj.size = Vector2.new(DifferenceX, Obj.size.y);
+          Obj.position = Vector2.new(
+            ObjPos.x - (DifferenceX) / 2 + Offset,
+            Obj.position.y
+          );
+          LeftDragger.position = Vector2.new(
+            Obj.position.x - Obj.size.x / 2 - Offset,
+            Obj.position.y
+          );
+        }
     },
     function() {
       LeftDragger.position = Vector2.new(
-        Obj.position.x - Obj.size.x / 2 - 0.0075,
+        Obj.position.x - Obj.size.x / 2 - Offset,
         Obj.position.y
       );
     }
@@ -173,19 +181,19 @@ function createDraggingTool(Obj) {
   var TopDragger = new Button(0.01, 0.01);
   CreateDragger(
     TopDragger,
-    Vector2.new(Obj.position.x, Obj.position.y - Obj.size.y / 2 - 0.0075),
+    Vector2.new(Obj.position.x, Obj.position.y - Obj.size.y / 2 - Offset),
     function(e, ObjPos) {
       var MouseYPos = e.y / window.innerHeight;
-      if (MouseYPos < Obj.position.y + Obj.size.y / 2 - 0.0075) {
+      if (MouseYPos < Obj.position.y + Obj.size.y / 2 - Offset) {
         var DifferenceY = ObjPos.y - MouseYPos;
         Obj.size = Vector2.new(Obj.size.x, DifferenceY);
         Obj.position = Vector2.new(
           Obj.position.x,
-          ObjPos.y - DifferenceY / 2 + 0.0075
+          ObjPos.y - DifferenceY / 2 + Offset
         );
         TopDragger.position = Vector2.new(
           Obj.position.x,
-          Obj.position.y - Obj.size.y / 2 - 0.0075
+          Obj.position.y - Obj.size.y / 2 - Offset
         );
       } else {
       }
@@ -193,7 +201,7 @@ function createDraggingTool(Obj) {
     function() {
       TopDragger.position = Vector2.new(
         Obj.position.x,
-        Obj.position.y - Obj.size.y / 2 - 0.0075
+        Obj.position.y - Obj.size.y / 2 - Offset
       );
     }
   );
@@ -202,20 +210,20 @@ function createDraggingTool(Obj) {
 
 Mouse.MouseDown.connect(function(e) {
   //if (SelectToolEnabled == true) {
-    AllObjects.forEach(Obj => {
-      if (Obj.position != null && Obj.size != null) {
-        var ObjectPosition = Obj.position;
-        var ObjectSize = Obj.size;
-        if (isPointInRectangle(e.clientX, e.clientY, Obj)) {
-          console.log("Clicked in rect!");
-          GlobalDraggers.forEach(function(draggerData) {
-            draggerData[0].visible = false;
-          });
-          var Draggers = createDraggingTool(Obj)
-          GlobalDraggers = Draggers
-          SelectToolEnabled = false
-        }
+  AllObjects.forEach(Obj => {
+    if (Obj.position != null && Obj.size != null) {
+      var ObjectPosition = Obj.position;
+      var ObjectSize = Obj.size;
+      if (isPointInRectangle(e.clientX, e.clientY, Obj)) {
+        console.log("Clicked in rect!");
+        GlobalDraggers.forEach(function(draggerData) {
+          draggerData[0].visible = false;
+        });
+        var Draggers = createDraggingTool(Obj);
+        GlobalDraggers = Draggers;
+        SelectToolEnabled = false;
       }
-    });
+    }
+  });
   //}
 });
