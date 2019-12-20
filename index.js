@@ -7,6 +7,11 @@ var CurrentAlertTextBox;
 
 var Objects = {};
 
+function round(NumToRound, PlaceValueToRound) {
+  rounded_number = Math.round(NumToRound * PlaceValueToRound) / PlaceValueToRound
+  return rounded_number
+}
+
 Array.prototype.insert = function(index, item) {
   this.splice(index, 0, item);
 };

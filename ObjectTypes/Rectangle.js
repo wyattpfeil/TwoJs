@@ -20,6 +20,8 @@ class Rectangle {
       this.opacity = 1;
       this.outlineColor = Color3.fromRGB(0, 0, 0);
       this.visible = true;
+      this.rotation = 0
+      this.bevel = 0
       this.SVGElement = document.querySelector("#two_0").childNodes[
         document.querySelector("#two_0").childNodes.length - 1
       ];
@@ -115,6 +117,7 @@ class Rectangle {
       return this._bevel
     }
     destroy() {
+      this.visible = false
       this.tworect.remove()
       two.update()
     }

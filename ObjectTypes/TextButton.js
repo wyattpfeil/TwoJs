@@ -8,6 +8,12 @@ class TextButton {
       this.size = Vector2.new(Width, Height);
       this.raised = true
       this.visible = true
+      this.textColor = Color3.fromRGB(0, 0, 0)
+      this.innerColor = Color3.fromRGB(255, 255, 255)
+      this.bevel = 0
+      this.onlyTextVisible = false
+      this.outline = 0
+      this.outlineColor = Color3.fromRGB(0, 0, 0)
       this.setRectangleToBacktangle(this.rectangle, this.backtangle);
       var TotalObjectsNumber = Object.keys(Objects).length + 1
       this.layer = TotalObjectsNumber
