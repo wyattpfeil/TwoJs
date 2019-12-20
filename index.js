@@ -3,6 +3,7 @@ var params = { width: window.innerWidth, height: window.innerHeight };
 var two = new Two(params).appendTo(elem);
 
 var CurrentTextBox;
+var CurrentAlertTextBox;
 
 var Objects = {};
 

@@ -139,6 +139,18 @@ CreateRectangleButton.onButtonClicked = function() {
   AllObjects.push(CreatedRect);
 };
 
+var BringToFrontButton = new TextButton(0.2, 0.2);
+BringToFrontButton.innerColor = Color3.fromRGB(115, 115, 115);
+BringToFrontButton.size = Vector2.new(0.1, 0.05);
+BringToFrontButton.position = Vector2.new(0.925, 0.2);
+BringToFrontButton.textColor = Color3.fromRGB(255, 255, 255);
+BringToFrontButton.bevel = 10;
+BringToFrontButton.text = "BringToFront";
+BringToFrontButton.onButtonClicked = function() {
+  if(SelectedObject) {
+    SelectedObject.BringToFront()
+  }
+};
 function createDraggingTool(Obj) {
   var Draggers = [];
   var MouseInRect = false;
@@ -386,7 +398,7 @@ function createProperties() {
   }, (SelectedObject.position.x).toFixed(4) + ", " + (SelectedObject.position.y).toFixed(4))
 }
 function createNewProperty(PropertyName, onTextSubmitCode, BaseValue) {
-  var SamplePropertyInput = new TextBox(PropertyName)
+  var SamplePropertyInput = new AlertTextBox(PropertyName)
   SamplePropertyInput.position = Vector2.new(0.1193, 0.05708245243128964 * PropertyNum)
   SamplePropertyInput.size = Vector2.new(0.09, 0.03)
   SamplePropertyInput.textColor = Color3.fromRGB(255, 255, 255)
@@ -404,8 +416,9 @@ function createNewProperty(PropertyName, onTextSubmitCode, BaseValue) {
   PropertyBoxes.push(SamplePropertyLabel)
   PropertyNum = PropertyNum + 1
   SamplePropertyInput.onTextSubmit = function() {
-    var TextWithoutCursor = SamplePropertyInput.text.slice(0, -1);
-    onTextSubmitCode(TextWithoutCursor)
+   // var TextWithoutCursor = SamplePropertyInput.text.slice(0, -1);
+    onTextSubmitCode(SamplePropertyInput.PromptInput)
+    console.log(SamplePropertyInput.PromptInput)
   }
 }
 function removeProperties() {
@@ -415,5 +428,6 @@ function removeProperties() {
   PropertyNum = 1
 }
 
+//var TestAlertBox = new AlertTextBox("Test")
 
 //SamplePropertyLabel.size = 0.015
